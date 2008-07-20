@@ -245,7 +245,7 @@ Each style is defined by a program written in Lua,
 using additional primitives suitable to construction of
 bibliographies.
 \*(BX provides the three standard styles in a form suitable for use
-.with the 
+with the 
 .B natbib
 package.
 <compatibility>
