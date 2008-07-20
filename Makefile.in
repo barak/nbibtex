@@ -1,0 +1,24 @@
+OBJS=nbib.o nbibtex.o boyer-moore.o
+
+nbibtex: $(OBJS)
+	$(CC) -o nbibtex $(OBJS) $(LDFLAGS) 
+
+install: nbibtex
+	for i in $(SHARE) $(BIN) $(MAN1); do [ -d $$i ] || install -d $$i; done
+	install -m644 bibtex.lua natbib.nbs $(SHARE)
+	install -m644 nbibtex.1 nbibfind.1 $(MAN1)
+	install -m755 nbibtex $(BIN)
+	rm -f $(BIN)/nbibfind
+	ln $(BIN)/nbibtex $(BIN)/nbibfind
+
+uninstall: 
+	rm $(SHARE)/bibtex.lua $(SHARE)/natbib.nbs
+	rm $(MAN1)/nbibtex.1 $(MAN1)/nbibfind.1
+	rm $(BIN)/nbibtex $(BIN)/nbibfind
+	rmdir $(SHARE)
+
+clean:
+	rm -f $(OBJS)
+
+distclean: clean
+	rm -f nbibtex

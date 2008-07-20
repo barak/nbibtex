@@ -1,0 +1,75 @@
+                      NbibTeX -- A better BibTeX
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+NbibTeX helps authors take better advantage of BibTeX data, especially
+when working in collaboration. Instead of using BibTeX 'keys', which
+are chosen arbitrarily and idiosyncratically, NbibTeX builds a
+bibliography by searching the actual contents of citations.
+
+The command nbibtex can be used just as you would use bibtex. Your
+\cite{...} commands are interpreted either as classic BibTeX keys (for
+backward compatibility) or as search commands. Thus, if your
+bibliography contains the classic paper on type inference, nbibtex
+should find it using a citation like \cite{damas-milner:1978}, or
+\cite{damas-milner:polymorphism}, or perhaps even simply
+\cite{damas-milner}. The same citations should also work with your
+coauthors' bibliographies, even if those bibliographies are organized
+differently.
+
+NbibTeX also comes with the nbibfind command, which uses the NbibTeX
+search engine on the command line. If you know you are looking for a
+paper by Harper and Moggi, you can just type
+
+   nbibfind harper-moggi
+
+and see what comes out.
+
+To help you work with coauthors who don't have NbibTeX, nbibtex can
+also emit a .bib file containing exactly the entries cited in your
+paper.
+
+
+Using NbibTeX
+~~~~~~~~~~~~~
+I envision three different ways for people to use NbibTeX.
+
+ 1. Use as you would bibtex for your own papers with your own
+    bibliography. Your file paper.tex will contain \bibliography{yours},
+    and to create a bibliography you will simply use
+
+       nbibtex paper
+
+ 2. Use to work with coauthors who also have NbibTeX, each using his
+    or her own bibliography. Your file paper.tex will contain
+    \bibliography{yours,mine,his}, and to create a bibliography you
+    will use
+
+       nbibtex -permissive paper
+
+    nbibtex will cheerfully ignore any missing bibliographies.
+
+ 3. Use to work with coauthors, some of whom have only bibtex. In this
+    case, your best bet is to use nbibtex to make a paper-specific
+    bibliography file. Your file paper.tex will contain
+    \bibliography{paper}, and to create or update paper.bib you will
+    use
+
+       nbibtex -permissive -bib -o paper.bib paper paper yours
+
+    This command line tells nbibtex to emit a .bib file (-bib) to file
+    paper.bib, based on citations found in paper.aux (first paper) and
+    using BibTeX entries found in either paper.bib (second paper) or
+    in yours.bib. Because of the -permissive option, it is OK if
+    paper.bib is missing. With paper.bib in place, you and your
+    coauthors can all use classic BibTeX:
+
+       bibtex paper
+
+
+You might enjoy trying out option 3 on the enclosed paper 'fun.tex'.
+
+
+Indefensible hacking based on NbibTeX
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I'm using the same infrastructure to keep my web pages up to date, but
+that's a story for another day.

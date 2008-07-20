@@ -1,0 +1,73 @@
+\documentclass[twocolumn]{article}
+\title{A Selective History of Functional Programming\\
+        {\large Or, How Good is \emph{Your} Bib{\TeX} File?}}
+\author{Norman Ramsey}
+\usepackage{natbib}
+\usepackage{times}% smaller fonts
+\bibpunct();A{},
+\begin{document}
+\maketitle
+\small
+
+This history is intended not so much to capture functional programming
+as it is to test my replacement for Bib{\TeX}.
+The idea is that you change the
+\verb+\bibliography+ command to use your own bibliography,
+try my \texttt{nbibtex}, and see how many papers it picks up
+correctly.
+To get all~23 references, I~had to combine the bibliographies of four
+professors (a 24th~reference was introduced by one of the~23). 
+My own personal bibliography is missing 7~references
+\citep{iverson::book,
+  :lambda-ultimate-declarative,
+  backus:liberate-neumann,
+  macqueen:modules-for-ml,
+  milner-tofte-harper:definition:1990,
+  jones:qualified-types:book,
+  peyton-jones-launchbury:lazy-functional-state-threads:in}.
+
+
+
+
+It all started with \cite{mccarthy:symbolic-recursive}.
+\cite{iverson::book} had some good ideas, but what really got people
+excited was Backus's \citeyearpar{backus:liberate-neumann}
+Turing lecture.
+By that time of course we had Scheme \citep{sussman-steele:scheme:197},
+which we all know is the ultimate language
+ \citep{:lambda-ultimate-imperative,:lambda-ultimate-declarative,:lambda-ultimate-goto}.
+
+Meanwhile \cite{milner:type-polymorphism-programming} was busy with~ML
+and type inference \citep{damas-milner}.
+MacQueen's \citeyearpar{macqueen:modules-for-ml} module proposal led to
+Standard~ML \citep{milner-tofte-harper:definition:1990}.
+Later work on modules by \cite{harper-lillibridge:sharing} led to
+a revised Definition
+\citep{milner-tofte-macqueen-harper}.
+Closely related work by
+\cite{leroy:modules:1994,leroy:functors:1995,leroy:modular-module-system}
+led to new developments in the Objective Caml dialect.
+
+Meanwhile, lazy functional programmers like
+\cite{hughes:why-functional-matters} were busy developing Haskell 
+\citep{peyton-jones:haskell:book}.
+Nifty features like type classes
+\citep{wadler-blott:ad-hoc-polymorphism} led to a cool theory of
+qualified types \citep{jones:qualified-types:book}.
+Not to mention monads \citep{wadler:essence-functional},
+special threads
+\citep{peyton-jones-launchbury:lazy-functional-state-threads:in},
+and other awkward \citep{peyton-jones:awkward-squad} features.
+
+There are too many papers to read them all in one semester, but when
+my students held a vote among those they read, they liked
+\cite{wadler-blott} best, although there was strong support for
+\cite{leroy:separate-compilation}. 
+
+
+
+\providecommand\includeftpref{} % wackiness of Simon's
+\bibliographystyle{plainnatx}
+\bibliography{fun}
+
+\end{document}

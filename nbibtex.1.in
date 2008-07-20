@@ -1,0 +1,323 @@
+.TH NBIBTEX 1 "15 May 2006"
+.\"=====================================================================
+.if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
+.if n .ds TX TeX
+.ie t .ds OX \fIT\v'+0.25m'E\v'-0.25m'X\fP for troff
+.el .ds OX TeX for nroff
+.\" the same but obliqued
+.\" BX definition must follow TX so BX can use TX
+.if t .ds BX \fRNB\s-2IB\s0\fP\*(TX
+.if n .ds BX NbibTeX
+.\" OB definition must follow TX so OB can use TX
+.if t .ds OB \fRB\s-2IB\s0\fP\*(TX
+.if n .ds OB BibTeX
+.\" LX definition must follow TX so LX can use TX
+.if t .ds LX \fRL\\h'-0.36m'\\v'-0.15v'\\s-2A\\s0\\h'-0.15m'\\v'0.15v'\fP\*(TX
+.if n .ds LX LaTeX
+.\"=====================================================================
+.SH NAME
+nbibtex \- make a bibliography for LaTeX
+.SH SYNOPSIS
+.B nbibtex
+.RI [ options ]
+.IR auxname [\fB.aux\fP] 
+.RI [ bibname ...]
+.\"=====================================================================
+.SH DESCRIPTION
+\*(BX 
+is a drop-in replacement for \*(OB.
+It
+reads the top-level auxiliary
+.RI ( .aux )
+file that was output during the running of
+.BR latex (1)
+or
+.BR tex (1)
+and creates a bibliography
+.RI ( .bbl )
+file that will be incorporated into the document on subsequent runs of
+\*(LX or \*(TX.  
+.PP
+\*(BX looks up, in bibliographic database
+.RI ( .bib )
+files specified by the \\bibliography command,
+the entries specified by the \\cite and \\nocite commands
+in the \*(LX or \*(TX source file.
+The association of \\cite command with 
+.I ".bib"
+entry is made by a simple query language described below.
+\*(BX formats the information from the
+.I ".bib"
+entries
+according to instructions in a bibliography style
+.RI ( .nbs )
+file (specified by the \\bibliographystyle command,
+and it outputs the results to the
+.I .bbl
+file.
+.PP
+If the optional
+.IR bibname s
+are used,
+\*(BX looks in the named bibliographies instead of those specified
+by the \\bibliography command.
+This feature can be used with the 
+.B "-bib"
+and
+.B "-o" 
+options to make a paper-specific 
+.I .bib
+file from larger
+.I .bib
+files.
+.PP
+The \*(LX manual
+explains what a \*(LX source file must contain to work with \*(BX.
+Appendix B of the manual describes the format of the
+.I .bib
+files. The `\*(BXing' document describes extensions and details of
+this format, and it gives other useful hints for using \*(BX.
+.\"=====================================================================
+.SH OPTIONS
+.TP
+.BI "-min-crossrefs=" number
+The
+.B -min-crossrefs
+option defines the minimum number of
+.B crossref
+required for automatic inclusion of the crossref'd entry on the citation
+list; the default is 2. 
+.TP
+.B "-terse"
+Accepted for backward compatibility with
+\*(OB; \*(BX is terse by default.
+.TP
+.B "-permissive"
+Enables \*(BX to continue working even when some of the 
+.I .bib
+files mentioned in the \\bibliography command are missing.
+Also tells \*(BX not to object if duplicate entries are found in
+multiple
+.I .bib
+files.
+.TP
+.B "-strict"
+Tells \*(BX to complain about all irregularities it spots in
+any 
+.I .bib
+file it parses.
+By default,  \*(BX (like \*(OB) complains only about entries it
+actually intends to use.
+.TP
+.BI "-o " file
+Writes the bibliography to
+.I file
+instead of to the default
+.IB auxname .bbl .
+If 
+.I file
+is
+.BR "-" ,
+writes to standard output.
+.TP
+.B "-bib"
+Instead of writing a bibliography for use by \*(LX,
+writes exactly those \*(BX entries needed by
+.IR auxname.
+Useful for making paper-specific 
+.I .bib
+files.
+.TP
+.B "-help"
+Emit a short help message and exit.
+.TP
+.B "-version"
+Emit version information and exit.
+.PP
+.\"=====================================================================
+.SH EXAMPLES
+To make a normal bibliography for file
+.BR paper.tex:
+.IP
+.B "nbibtex paper"
+.PP
+To use the personal 
+.I .bib
+file
+.B personal.bib
+to make a paper-specific bibliography for file
+.BR paper.tex ,
+which should use the command
+.BR "\\bibliography{paper}" :
+.IP
+.B "nbibtex -o paper.bib -bib paper personal"
+.PP
+The file
+.B personal.bib
+should be found on the usual
+BIBINPUTS path.
+.PP
+To extend the bibliography
+.B paper.bib
+by filling in missing entries from
+.BR personal.bib :
+.IP
+.B "nbibtex -permissive -o paper.bib -bib paper paper personal"
+.\"=====================================================================
+.SH QUERY LANGUAGE
+To specify a paper you wish to cite, 
+classic \*(OB requires an arbitrary key.
+The advantage of \*(BX is that you cite a paper by the
+.I contents
+of the \*(BX entry.
+.IP
+The citation consists of a sequence of one or more 
+.I constraints
+separated by colons.
+A constraint may be empty.
+.IP
+A nonempty constraint is of the form
+.IB key = words\fR,
+where 
+.I key
+is the name of a field in the \*(BX entry
+and 
+.I words
+is a sequence of one or more words separated by dashes.
+The contraint is satisfied if every word in 
+.I words
+is found in the field named by
+.I key.
+(The
+.I key
+may also be
+.BR "[type]" ,
+which matches agains the type of the entry,
+or
+.BR "*" ,
+which looks for 
+.I words
+in 
+.I any
+field.)
+.PP
+For example, the following queries might match an entry for a useful
+source on arithmetic:
+.IP
+.B "author=knuth:series=art-programming:volume=2"
+.br
+.B "author=knuth:title=seminumerical:year=1981
+.PP
+As a convenience, keys may be defaulted in up to three constraints.
+In the first constraint, the default key is
+.B author 
+(or if there is no author,
+.BR editor ).
+In the second constraint, the default key is
+.B year
+if 
+.I words 
+is all digits, and is
+.B title 
+otherwise.
+In the third constraint, the default key is
+.B year
+if 
+.I words 
+is all digits, and is
+.B "[type]"
+otherwise.
+So for example, we could have written
+.IP
+.B "knuth:seminumerical:1981"
+.PP
+To match a word in
+.IR words ,
+\(*BX uses the Boyer-Moore string-matching algorithm,
+so longer words are usually faster.
+.PP
+\*(BX's query language can be used on the command line by
+.BR nbibfind (1).
+.\"=====================================================================
+.SH NBIBTEX STYLES AND COMPATIBILITY WITH \*(OB
+Like \*(OB, \*(BX supports a variety of "styles" of bibliography.
+Each style is defined by a program written in Lua,
+using additional primitives suitable to construction of
+bibliographies.
+\*(BX provides the three standard styles in a form suitable for use
+.with the 
+.B natbib
+package.
+<compatibility>
+.PP
+Additional styles may be created by writing new Lua code;
+for example, an author wishing to create a style called
+.B mcbride
+would put a file called
+.B mcbride.nbs
+(for New \*(OB Style)
+in the directory
+.BR "<NBSDIR>" .
+For guidance on what goes into such a file,
+consult the other files in that directory and the literate source code
+for \*(BX.
+.\"=====================================================================
+.SH ENVIRONMENT
+.\"\*(BX searches the directories in the
+.\"path defined by the BSTINPUTS environment variable for
+.\".I .bst
+.\"files. If BSTINPUTS is not set, it uses 
+.\"the NBSINPUTS variable.
+.\"If neither is set, it uses
+.\"the system default.
+For
+.I .bib
+files, \*(BX searches the directories in the
+path defined by the BIBINPUTS environment variable if that is set,
+otherwise the default.
+For details of the searching, 
+see
+.BR tex (1)
+and
+.BR kpsewhich (1).
+.PP
+.\"If the environment variable
+.\"TEXMFOUTPUT is set, \*(BX attempts to put its output
+.\"files in it, if they cannot be put in the current directory.  
+.\"WRONG!!!
+.\"Again, see
+.\".BR tex (1).
+No special searching is done for the
+.I .aux
+file.
+.\"=====================================================================
+.SH FILES
+.TP
+.I <NBSDIR>/*.nbs
+New bibliography style files.
+.\"=====================================================================
+.SH BUGS
+Although I have made some effort in this direction, compatibility with
+\*(BX does not extend to 
+.B ".bib"
+files containing non-ASCII characters.
+.\"=====================================================================
+.SH "SEE ALSO"
+.BR nbibfind (1),
+.BR latex (1),
+.BR tex (1),
+.BR kpsewhich (1),
+.BR bibtex (1).
+.br
+Leslie Lamport,
+.IR "\*(LX \- A Document Preparation System" ,
+Addison-Wesley, 1985, ISBN 0-201-15790-X.
+.br
+The \*(BX home page at
+.BR "http://www.eecs.harvard.edu/~nr/nbibtex" .
+.br
+The Lua home page at 
+.BR "http://www.lua.org" .
+.\"=====================================================================
+.SH AUTHOR
+Norman Ramsey, Harvard University.

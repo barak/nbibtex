@@ -1,0 +1,14 @@
+If you're lucky enough to be able to use a Debian package,
+go to http://www.eecs.harvard.edu/~nr/nbibtex and follow the 
+directions for getting nbibtex.
+
+Otherwise, to build NbibTeX requires a C compiler and Lua version 5.0.
+Needing Lua means needing the right -I and -l options to your compiler.
+Because I live in fear of gnu autoconfig, I have written a ./configure
+script by hand.  Maybe it does something useful.
+
+By default, the script installs into /usr/local.
+
+Options to ./configure include
+  --debian      configure as for Debian, including installation into /usr
+  --compatible  make the 'plainnat' style exactly compatible with BibTeX

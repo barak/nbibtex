@@ -1,0 +1,151 @@
+.TH NBIBFIND 1 "4 May 2006"
+.\"=====================================================================
+.if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
+.if n .ds TX TeX
+.ie t .ds OX \fIT\v'+0.25m'E\v'-0.25m'X\fP for troff
+.el .ds OX TeX for nroff
+.\" the same but obliqued
+.\" BX definition must follow TX so BX can use TX
+.if t .ds BX \fRNB\s-2IB\s0\fP\*(TX
+.if n .ds BX NbibTeX
+.\" OB definition must follow TX so OB can use TX
+.if t .ds OB \fRB\s-2IB\s0\fP\*(TX
+.if n .ds OB BibTeX
+.\" LX definition must follow TX so LX can use TX
+.if t .ds LX \fRL\\h'-0.36m'\\v'-0.15v'\\s-2A\\s0\\h'-0.15m'\\v'0.15v'\fP\*(TX
+.if n .ds LX LaTeX
+.\"=====================================================================
+.SH NAME
+nbibfind \- find bibliography entries for BibTeX or NbibTeX
+.SH SYNOPSIS
+.B nbibfind
+.RB [ -terse | -full | -bib ]
+.I query
+.RI [ bibname ...]
+.\"=====================================================================
+.SH DESCRIPTION
+.B nbibfind
+searches for
+\*(OB entries using the same query algorithm as
+\*(BX.
+If the optional list of
+.IR bibname s
+is given, it searches only those bibliographies;
+otherwise, it searches all bibliographies on the user's BIBINPUTS
+(or on the standard system path).
+The language of 
+.I query
+is that of
+.BR nbibtex (1).
+.\"=====================================================================
+.SH OPTIONS
+.TP
+.B "-terse"
+Print a one-line summary of each matched entry (the default).
+.TP
+.B "-full"
+Print a longer summary of each matched entry,
+including full authors, year, and title,
+possibly spread over multiple lines.
+.TP
+.B "-bib"
+Print each entry in a form suitable for including in a
+.I .bib
+file.
+.\"=====================================================================
+.SH EXAMPLES
+.B "nbibfind author=knuth:series=art-programming:volume=2"
+.br
+.B "nbibfind knuth:seminumerical personal.bib"
+.br
+.B "nbibfind harper-moggi:phase"
+.br
+.B "nbibfind :essence-algol"
+.br
+.B "nbibfind :essence-functional"
+.\"=====================================================================
+.SH QUERY LANGUAGE
+The query language is that of
+.BR nbibtex (1).
+.PP
+A query consists of a sequence of one or more 
+.I constraints
+separated by colons.
+A constraint may be empty.
+.PP
+A nonempty constraint is of the form
+.IB key = words\fR,
+where 
+.I key
+is the name of a field in the \*(BX entry
+and 
+.I words
+is a sequence of one or more words separated by dashes.
+The contraint is satisfied if every word in 
+.I words
+is found in the field named by
+.I key.
+(The
+.I key
+may also be
+.BR "[type]" ,
+which matches agains the type of the entry,
+or
+.BR "*" ,
+which looks for 
+.I words
+in 
+.I any
+field.)
+.PP
+As a convenience, keys may be defaulted in up to three constraints.
+In the first constraint, the default key is
+.BR author .
+In the second constraint, the default key is
+.B year
+if 
+.I words 
+is all digits, and is
+.B title 
+otherwise.
+In the third constraint, the default key is
+.B year
+if 
+.I words 
+is all digits, and is
+.B "[type]"
+otherwise.
+.PP
+To match a word in
+.IR words ,
+.B nbibfind
+uses the Boyer-Moore string-matching algorithm,
+so longer words are usually faster.
+.\"=====================================================================
+.SH ENVIRONMENT
+For
+.I .bib
+files, 
+.B nbibfind
+uses the BIBINPUTS environment variable if that is set,
+otherwise the default.
+For details of the searching, 
+see
+.BR tex (1)
+and
+.BR kpsewhich (1).
+.PP
+.\"=====================================================================
+.SH "SEE ALSO"
+.BR nbibtex (1),
+.BR latex (1),
+.BR tex (1),
+.BR kpsewhich (1),
+.BR bibtex (1).
+.br
+Leslie Lamport,
+.IR "\*(LX \- A Document Preparation System" ,
+Addison-Wesley, 1985, ISBN 0-201-15790-X.
+.\"=====================================================================
+.SH AUTHOR
+Norman Ramsey, Harvard University.
