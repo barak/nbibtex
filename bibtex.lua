@@ -42,8 +42,10 @@ bibtex.doc.bst = '# table of functions used to write style files'
 -- <bibtex.lua>=
 local find = string.find
 -- <declarations of internal functions>=
+local query
 local matchq
 bibtex.doc.matchq = 'matchq: string -> predicate --- compile query string'
+bibtex.matchq = matchq
 --   Error handling, warning messages, and logging
 -- 
 -- <Lua utility functions>=
@@ -53,15 +55,15 @@ bibtex.doc.matchq = 'matchq: string -> predicate --- compile query string'
 ---------- Utility functions for "Implementation of nbibtex" -----------
 ------------------------------------------------------------------------
 
-local function printf (...) return io.stdout:write(string.format(unpack(arg))) end
-local function eprintf(...) return io.stderr:write(string.format(unpack(arg))) end
+local function printf (...) return io.stdout:write(string.format(...)) end
+local function eprintf(...) return io.stderr:write(string.format(...)) end
 -- I have to figure out what to do about errors --- the
 -- current code is bogus. Among other things, I should be
 -- setting error levels.
 -- <Lua utility functions>=
-local function bibwarnf (...) eprintf(unpack(arg)); eprintf('\n') end
-local function biberrorf(...) eprintf(unpack(arg)); eprintf('\n') end
-local function bibfatalf(...) eprintf(unpack(arg)); eprintf('\n'); os.exit(2) end
+local function bibwarnf (...) eprintf(...); eprintf('\n') end
+local function biberrorf(...) eprintf(...); eprintf('\n') end
+local function bibfatalf(...) eprintf(...); eprintf('\n'); os.exit(2) end
 -- Logging? What logging?
 -- 
 -- <Lua utility functions>=
@@ -104,13 +106,13 @@ do
     end
 
   function emit_warning(tag, ...)
-    return assert(warnfuns[tag])(unpack(arg))
+    return assert(warnfuns[tag])(...)
   end
 
   local held
   function hold_warning(...)
     held = held or { }
-    table.insert(held, arg)
+    table.insert(held, { ... })
   end
   function held_warnings()
     local h = held
@@ -228,43 +230,11 @@ local function truncate(s, n)
     return string.sub(s, 1, n-3) .. '...'
   end
 end
--- To search all bib files, we lean heavily on kpsewhich,
--- which is distributed with the Web2C version of TeX,
--- and which knows exactly which directories to search.
--- <Lua utility functions>=
-local readable -- is a file readable?
-local function all_bibs()
-  local pre_path = assert(capture('kpsewhich -show-path bib'))
-  local path = assert(capture('kpsewhich -expand-path ' .. pre_path))
-  local bibs = { } -- list of results
-  local inserted = { } -- set of inserted bibs, to avoid duplicates
-  for _, dir in ipairs(split(path, ':')) do
-    local files = assert(capture('echo ' .. dir .. '/*.bib'))
-    for _, file in ipairs(split(files, '%s')) do
-      if readable(file) then
-        if not (workaround.badbibs and (find(file, 'amsxport%-options') or
-                                        find(file, '/plbib%.bib$')))
-        then
-          if not inserted[file] then
-            table.insert(bibs, file)
-            inserted[file] = true
-          end
-        end
-      end
-    end
-  end
-  return bibs
-end
-bibtex.all_bibs = all_bibs
--- [[workaround.badbibs]], which prevents us
--- from searching some bogus bibfiles that come with
--- Thomas Esser's teTeX.
-
 -- It's a pity there's no more efficient way to see if a
 -- file is readable than to try to read it, but that's
 -- portability for you.
 -- <Lua utility functions>=
-function readable(file)
+local function readable(file)
   local f, msg = io.open(file, 'r')
   if f then
     f:close()
@@ -372,6 +342,38 @@ end
 -- brace-delimited substrings:
 -- <Lua utility functions>=
 local function brace_split(s) return odd_even_split(s, '%b{}') end
+-- <Lua utility functions>=
+-- To search all bib files, we lean heavily on kpsewhich,
+-- which is distributed with the Web2C version of TeX,
+-- and which knows exactly which directories to search.
+-- <post-split Lua utility functions>=
+local function all_bibs()
+  local pre_path = assert(capture('kpsewhich -show-path bib'))
+  local path = assert(capture('kpsewhich -expand-path ' .. pre_path))
+  local bibs = { } -- list of results
+  local inserted = { } -- set of inserted bibs, to avoid duplicates
+  for _, dir in ipairs(split(path, ':')) do
+    local files = assert(capture('echo ' .. dir .. '/*.bib'))
+    for _, file in ipairs(split(files, '%s')) do
+      if readable(file) then
+        if not (workaround.badbibs and (find(file, 'amsxport%-options') or
+                                        find(file, '/plbib%.bib$')))
+        then
+          if not inserted[file] then
+            table.insert(bibs, file)
+            inserted[file] = true
+          end
+        end
+      end
+    end
+  end
+  return bibs
+end
+bibtex.all_bibs = all_bibs
+-- [[workaround.badbibs]], which prevents us
+-- from searching some bogus bibfiles that come with
+-- Thomas Esser's teTeX.
+
 --  String lengths and widths
 -- 
 -- Function [[text_char_count]] counts characters, but a
@@ -426,7 +428,7 @@ bibtex.doc.entries = 'reader -> iterator   # generate entries'
 -- <exported Lua functions>=
 function bibtex:show_doc(title)
   local out = bst.writer(io.stdout, 5)
-  local function outf(...) return out:write(string.format(unpack(arg))) end
+  local function outf(...) return out:write(string.format(...)) end
   local allkeys, dkeys = { }, { }
   for k, _ in pairs(self)     do table.insert(allkeys, k) end
   for k, _ in pairs(self.doc) do table.insert(dkeys,   k) end
@@ -573,7 +575,7 @@ function bibtex.bibtex(argv)
       function commands.bibdata(arg)
         assert(not bibdata_seen, [[LaTeX provides multiple \bibdata commands]])
         bibdata_seen = true
-        for bib in string.gfind(arg, '[^,]+') do
+        for bib in string.gmatch(arg, '[^,]+') do
           assert(not find(bib, '%s'), 'bibname from LaTeX contains whitespace')
           table.insert(bibfiles, string.lower(bib))
         end
@@ -600,8 +602,9 @@ function bibtex.bibtex(argv)
       local keys_seen, lower_seen = { }, { } -- which keys have been seen already
 
       function commands.citation(arg)
-        for key in string.gfind(arg, '[^,]+') do
-          assert(not find(key, '%s'), 'Citation key from LaTeX contains whitespace')
+        for key in string.gmatch(arg, '[^,]+') do
+          assert(not find(key, '%s'),
+                 'Citation key {' .. key .. '} from LaTeX contains whitespace')
           if key == '*' then
             cited_star = true
           elseif not keys_seen[key] then --- duplicates are OK
@@ -743,7 +746,7 @@ function bibtex.bibtex(argv)
           local savecomplained, issuecomplaints
           if strict then
             function savecomplaint(e1, e2, complain, ...)
-              return complain(unpack(arg))
+              return complain(...)
             end
             function issuecomplaints(e) end
           else
@@ -753,11 +756,11 @@ function bibtex.bibtex(argv)
               table.insert(complaints[e], t)
             end
             function savecomplaint(e1, e2, ...)
-              save(e1, arg)
-              save(e2, arg)
+              save(e1, { ... })
+              save(e2, { ... })
             end
             local function call(c, ...)
-              return c(unpack(arg))
+              return c(...)
             end
             function issuecomplaints(e)
               for _, c in ipairs(complaints[e] or { }) do
@@ -858,19 +861,6 @@ function bibtex.bibtex(argv)
   -- <from [[bibstyle]], [[citekeys]], and [[bibfiles]], compute and emit the list of entries>=
   local find_entry -- function from key to citation
   do
-    -- The [[query]] function uses the engine described in
-    -- Section [->].
-    -- <definition of internal function [[query]], used to search a list of entries>=
-    local function query(c, entries)
-      local p = matchq(c)
-      local t = { }
-      for _, e in ipairs(entries) do
-        if p(e.type, e.fields) then
-          table.insert(t, e)
-        end
-      end
-      return t
-    end
     local cache = { } -- (citation-key -> entry) table
 
     function find_entry(c)
@@ -1238,6 +1228,21 @@ do
       return p
     end
   end
+  -- The [[query]] function uses the engine described in
+  -- Section [->].
+  -- <definition of [[query]], used to search a list of entries>=
+  function query(c, entries)
+    local p = matchq(c)
+    local t = { }
+    for _, e in ipairs(entries) do
+      if p(e.type, e.fields) then
+        table.insert(t, e)
+      end
+    end
+    return t
+  end
+  bibtex.query = query
+  bibtex.doc.query = 'query: string -> entry list -> entry list'
 end
 -- Function [[bibpath]] is normally called on a bibname
 -- in a LaTeX file, but because a bibname may also be
@@ -1807,7 +1812,7 @@ function bst.writer(out, indent)
   local gsub = string.gsub
   local buf = ''
   local function write(self, ...)
-    local s = table.concat(arg)
+    local s = table.concat { ... }
     local lines = split(s, '\n')
     lines[1] = buf .. lines[1]
     buf = table.remove(lines)

@@ -2,8 +2,8 @@
 SHARE=$(DESTDIR)/usr/share/nbibtex
 BIN=$(DESTDIR)/usr/bin
 MAN1=$(DESTDIR)/usr/share/man/man1
-CFLAGS=-I/usr/include//lua50   -DSHARE='"$(SHARE)"'
-LDFLAGS=-llua50   -llualib50 -llua50  
+CFLAGS=-I/usr/include/lua5.1   -DSHARE='"$(SHARE)"'
+LDFLAGS=-llua5.1  
 
 OBJS=nbib.o nbibtex.o boyer-moore.o
 

@@ -2,13 +2,13 @@ Source: nbibtex
 Section: tex
 Priority: optional
 Maintainer: Norman Ramsey <nr@eecs.harvard.edu>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev, liblua50-dev
-Standards-Version: 3.6.2
+Build-Depends: debhelper (>= 7), autotools-dev, liblua5.1-0-dev, pkg-config
+Standards-Version: 3.8.0
 
 Package: nbibtex
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: texlive-latex-base | tetex-bin
+Recommends: texlive-latex-base
 Description: Powerful, flexible replacement for bibtex
  Tools to help authors take better advantage of BibTeX data,
  especially when working in collaboration.  Instead of using BibTeX
@@ -22,4 +22,3 @@ Section: doc
 Description: Documentation of source code for nbibtex
  Includes the 'literate programming' source for nbibtex, which
  is useful if you want to create your own styles.
-

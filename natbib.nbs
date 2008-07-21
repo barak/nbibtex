@@ -56,7 +56,7 @@ local function make_style(style_base, min_etal, chicago, compatible)
 
 
 
-  --[[----------------------------------------------------------------
+  --[=[----------------------------------------------------------------
   The original Bibtex is written in a PostScript-like language that has
   no function parameters; all values are passed on a stack.  In this
   language, each entry in turn has its fields placed in global
@@ -73,13 +73,13 @@ local function make_style(style_base, min_etal, chicago, compatible)
   variables are set by function [[with_entry]], which then applies a
   function.  The ITERATE directive is replaced by a loop that calls
   [[with_entry]] with each entry and a suitable function.
-  --]]----------------------------------------------------------------
+  --]=]----------------------------------------------------------------
 
   local citation, key, warning_key, fields --- set to current entry
   local function with_entry(c, f, ...)
     citation, key, fields = c, c.key, c.fields
     warning_key = citation.orig_key or key
-    f(unpack(arg))
+    f(...)
   end
 
 
@@ -104,7 +104,7 @@ local function make_style(style_base, min_etal, chicago, compatible)
   local find = string.find
   local gsub = string.gsub
   local stringf = string.format
-  local function eprintf(...) return io.stderr:write(stringf(unpack(arg))) end
+  local function eprintf(...) return io.stderr:write(stringf(...)) end
   local empty = bst.empty
   -------------------------
 
@@ -221,7 +221,7 @@ local function make_style(style_base, min_etal, chicago, compatible)
 
   function warnf(...)
     io.stderr:write('Warning--')
-    io.stderr:write(string.format(unpack(arg)))
+    io.stderr:write(string.format(...))
     io.stderr:write(string.format('\n--line %d of file %s\n',
                       citation.line, string.gsub(citation.file, '.*[/\\]', '')))
   end
@@ -243,7 +243,7 @@ local function make_style(style_base, min_etal, chicago, compatible)
   do
     local bblfile -- open file for bbl file
     function output_to(bbl) bblfile = bst.writer(bbl) end
-    function writef(...) return bblfile:write(string.format(unpack(arg))) end
+    function writef(...) return bblfile:write(string.format(...)) end
 
     -- output is done with a delay of one fragment, so that state changes
     -- may be used to add a period to the preceding fragment, for example.
@@ -288,7 +288,9 @@ local function make_style(style_base, min_etal, chicago, compatible)
       output_funs['table']    = function(t) return output(unpack(t)) end
       output_funs['function'] = function(f) return output(f()) end
       function output(...)
-        for i = 1, table.getn(arg) do --- can't use ipairs b/c arg might be nil
+        local n = select('#', ...)
+        local arg = { ... }
+        for i = 1, n do --- can't use ipairs b/c arg might be nil
           local v = arg[i]
           assert(output_funs[type(v)], "Bad value to output()") (v)
         end
