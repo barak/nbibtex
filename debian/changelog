@@ -1,3 +1,11 @@
+nbibtex (0.9.17-3rc) unstable; urgency=low
+
+  * Add debian/watch file for uscan
+  * Add URLs to debian/copyright
+  * Pointless LaTeX change in fun.tex to avoid \verb
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 23 Jul 2008 21:54:00 +0200
+
 nbibtex (0.9.17-2) unstable; urgency=low
 
   * First official Debian version
