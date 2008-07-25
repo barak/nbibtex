@@ -528,7 +528,8 @@ function bibtex.bibtex(argv)
   -- Here's what we accumulate by reading .aux files: 
   local bibstyle           -- the bibliography style
   local bibfiles = { }     -- list of files named in order of file
-  local citekeys = { }     -- list of citation keys from .aux (in order, lower, no dups)
+  local citekeys = { }     -- list of citation keys from .aux
+                           -- (in order seen, mixed case, no duplicates)
   local cited_star = false -- .tex contains \cite{*} or \nocite{*}
 
   --   Reading all the aux files and validating the inputs
@@ -617,7 +618,8 @@ function bibtex.bibtex(argv)
               lower_seen[low] = key
             end
             if not cited_star then -- no more insertions after the star
-              table.insert(citekeys, low) --- maybe should be key instead?
+              table.insert(citekeys, key) -- must be key, not low, 
+                                          -- so that keys in .bbl match .aux
             end
           end
         end
@@ -693,8 +695,8 @@ function bibtex.bibtex(argv)
   -- To find the pathname for a bib file, we use
   -- [[bibtex.bibpath]].
   -- <definition of function [[openbib]], which sets [[get_one_bib]] if successful>=
-  local function openbib(bib)
-    local macros = bibstyle.macros()
+  local function openbib(bib, macros)
+    macros = macros or bibstyle.macros()
     local filename, msg = bibtex.bibpath(bib)
     if not filename then
       if not permissive then biberrorf("Cannot find file %s.bib", bib) end
@@ -710,8 +712,9 @@ function bibtex.bibtex(argv)
   end
 
   local warnings = { }  -- table of held warnings for each entry
+  local macros = bibstyle.macros() -- must accumulate macros across .bib files
   for _, bib in ipairs(bibfiles) do
-    local bibfilename, rdr = openbib(bib)
+    local bibfilename, rdr = openbib(bib, macros)
     if rdr then
       local t -- list that will receive entries from this reader
       if permissive then
@@ -1250,15 +1253,24 @@ end
 -- <exported Lua functions>=
 bibtex.doc.bibpath = 'string -> string # from \\bibliography name, find pathname of file'
 function bibtex.bibpath(bib)
-  assert(not(find(bib, '/')), 'Function bibpath should not be given a pathname')
-  if not find(bib, '%.bib$') then
-    bib = bib .. '.bib'
-  end
-  local pathname = capture('kpsewhich ' .. bib)
-  if string.len(pathname) > 1 then
-    return pathname
+  if find(bib, '/') then
+    local f, msg = io.open(bib)
+    if not f then
+      return nil, msg
+    else
+      f:close()
+      return bib
+    end
   else
-    return nil, 'kpsewhich cannot find ' .. bib
+    if not find(bib, '%.bib$') then
+      bib = bib .. '.bib'
+    end
+    local pathname = capture('kpsewhich ' .. bib)
+    if string.len(pathname) > 1 then
+      return pathname
+    else
+      return nil, 'kpsewhich cannot find ' .. bib
+    end
   end
 end
 -- The simplest entry is legitimate BibTeX source:

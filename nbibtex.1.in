@@ -59,9 +59,24 @@ file.
 If the optional
 .IR bibname s
 are used,
-\*(BX looks in the named bibliographies instead of those specified
+\*(BX looks in the named bibliographies 
+.I instead
+of those specified
 by the \\bibliography command.
-This feature can be used with the 
+A
+.I bibname
+without a slash (/) character means the same thing it would mean
+in a \\bibliographystyle command: it is looked up according to the
+.rules of \*(OB.
+A
+.I bibname with
+a slash character is taken to be the absolute or relative pathname 
+of a
+.I ".bib" 
+file.
+Explicit 
+.IR bibname s
+can be used with the 
 .B "-bib"
 and
 .B "-o" 
@@ -298,7 +313,7 @@ New bibliography style files.
 .\"=====================================================================
 .SH BUGS
 Although I have made some effort in this direction, compatibility with
-\*(BX does not extend to 
+\*(OB does not extend to 
 .B ".bib"
 files containing non-ASCII characters.
 .\"=====================================================================
