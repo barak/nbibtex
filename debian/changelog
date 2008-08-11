@@ -1,10 +1,21 @@
-nbibtex (0.9.17-3rc) unstable; urgency=low
+nbibtex (0.9.18-2) unstable; urgency=low
 
   * Add debian/watch file for uscan
   * Add URLs to debian/copyright
   * Pointless LaTeX change in fun.tex to avoid \verb
 
- -- Barak A. Pearlmutter <bap@debian.org>  Wed, 23 Jul 2008 21:54:00 +0200
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 11 Aug 2008 12:33:05 +0200
+
+nbibtex (0.9.18-1) unstable; urgency=low
+
+  * New upstream release, with some features suggested by Barak Pearlmutter:
+  * Fixed typo sed s/'^[.]with'/with/ in nbibtex man page
+  * For tags, use the same case in the .bbl as is used in the .aux
+  * A @string defined in one .bib file can now be used in a later file
+  * Accept pathname on command line to point to .bib file
+  * Improvements and corrections to debian/control
+
+ -- Norman Ramsey <nr@eecs.harvard.edu>  Fri, 25 Jul 2008 17:07:58 -0400
 
 nbibtex (0.9.17-2) unstable; urgency=low
 
