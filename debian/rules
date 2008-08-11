@@ -59,7 +59,7 @@ clean:
 	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 	dh_clean 
 
 install: install-indep install-arch
