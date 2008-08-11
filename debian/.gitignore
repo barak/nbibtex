@@ -1,0 +1,6 @@
+nbibtex-doc
+nbibtex
+files
+*.log
+*.debhelper
+nbibtex.substvars

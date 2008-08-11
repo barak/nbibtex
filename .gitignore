@@ -1,0 +1,9 @@
+Makefile
+bibtex.lua
+build-arch-stamp
+build-indep-stamp
+natbib.nbs
+nbib.o
+nbibtex
+nbibtex.1
+*.o
