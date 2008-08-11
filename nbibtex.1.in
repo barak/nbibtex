@@ -67,7 +67,7 @@ A
 .I bibname
 without a slash (/) character means the same thing it would mean
 in a \\bibliographystyle command: it is looked up according to the
-.rules of \*(OB.
+rules of \*(OB.
 A
 .I bibname with
 a slash character is taken to be the absolute or relative pathname 
