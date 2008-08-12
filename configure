@@ -1,30 +1,47 @@
 #!/bin/sh
 
-DESTDIR=
-PREFIX=usr/local
-debian=
+prefix=/usr/local
+mandir="\$(datarootdir)/man"
 plain_compatible=false
 
 while [ $# -gt 0 ]
 do
-  case $1 in
-    --help)
-       cat 1>&2 <<EOF
+    case $1 in
+	--help)
+	    cat 1>&2 <<EOF
 Usage: $0 [options]
 
 Options:
   --help         This message
-  --debian       Configure to build debian package
   --compat[ible] Bibliography style 'plainnat' identical to standard
-  --prefix==     Set installation prefix [default $PREFIX]
+  --prefix=/DIR  Set installation prefix [default $prefix]
+  --mandir=/DIR  Man page installation prefix, [default $mandir]
+
+Options ignored in order to appease dh_auto_configure:
+  --build=x
+  --includedir=x
+  --infodir=x
+  --sysconfdir=x
+  --localstatedir=x
+  --libexecdir=x
+  --disable-maintainer-mode
+  --disable-dependency-tracking
 EOF
-      exit 0
-      ;;
-   --prefix=*) PREFIX="`echo $2 | sed 's/.*=//'`" ; shift ; shift ;;
-   --debian) debian=1 ; PREFIX=usr ; shift ;;
-   --compat|--compatible) plain_compatible=true ; shift ;;
-   *) echo "Usage: $0 -- help"; exit 1 ;;
-  esac
+	    exit 0
+	    ;;
+	--prefix=*) prefix="$(echo $1 | sed 's/.*=//')" ; shift ;;
+	--mandir=*) mandir="$(echo $1 | sed 's/.*=//')" ; shift ;;
+	--compat|--compatible) plain_compatible=true ; shift ;;
+	--build=*) shift ;;
+	--includedir=*) shift ;;
+	--infodir=*) shift ;;
+	--sysconfdir=*) shift ;;
+	--localstatedir=*) shift ;;
+	--libexecdir=*) shift ;;
+	--disable-maintainer-mode) shift ;;
+	--disable-dependency-tracking) shift ;;
+	*) echo "Usage: $0 --help"; exit 1 ;;
+    esac
 done
       
 ######################################################################33
@@ -34,10 +51,10 @@ done
 CF=
 LF=
 
-if [ -x "`which pkg-config 2>/dev/null`" ]; then
+if [ -x "$(which pkg-config 2>/dev/null)" ]; then
 
-  CF="`pkg-config --cflags lua5.1`"
-  LF="`pkg-config --libs   lua5.1`"
+  CF="$(pkg-config --cflags lua5.1)"
+  LF="$(pkg-config --libs   lua5.1)"
 
   if [ -z "$CF" ]; then
     echo "Don't know how to find include files for Lua 5.1"; exit 1
@@ -112,28 +129,12 @@ echo "Lua: OK"
 
 ################################################################
 
-if [ -z "$debian" ]; then
-  setdest="DESTDIR=$DESTDIR"
-else
-  setdest=
-fi
-
-dollar='$'
-
-cat <<EOF > Makefile
-$setdest
-SHARE=$dollar(DESTDIR)/$PREFIX/share/nbibtex
-BIN=$dollar(DESTDIR)/$PREFIX/bin
-MAN1=$dollar(DESTDIR)/$PREFIX/share/man/man1
-EOF
-
-cat <<EOF >> Makefile
-CFLAGS=$CF -DSHARE='"$dollar(SHARE)"'
+cat <<EOF - Makefile.in > Makefile
+prefix=${prefix}
+mandir=${mandir}
+CFLAGS=$CF -DSHARE='"\${SHARE}"'
 LDFLAGS=$LF
-
 EOF
-
-cat Makefile.in >> Makefile
 
 cat <<EOF - bibtex.lua.in > bibtex.lua
 local config = { nbs = "$SHARE" }
@@ -165,7 +166,7 @@ is available as style \
 fi
 
 
-sed -e "s@<NBSDIR>@$DESTDIR/$PREFIX/share/nbibtex@g" \
+sed -e "s@<NBSDIR>@$prefix/share/nbibtex@g" \
     -e "s@<compatibility>@$compatibility@" \
   < nbibtex.1.in > nbibtex.1
 
@@ -173,4 +174,3 @@ sed -e "s@<NBSDIR>@$DESTDIR/$PREFIX/share/nbibtex@g" \
 cat <<EOF - natbib.nbs.in > natbib.nbs
 local plain_compatible = $plain_compatible
 EOF
-

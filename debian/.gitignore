@@ -1,6 +1,7 @@
-nbibtex-doc
-nbibtex
-files
-*.log
 *.debhelper
+*.log
+files
+nbibtex
+nbibtex-doc
 nbibtex.substvars
+tmp

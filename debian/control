@@ -1,7 +1,7 @@
 Source: nbibtex
 Section: tex
 Priority: optional
-Maintainer: Norman Ramsey <nr@eecs.harvard.edu>
+Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 7), autotools-dev, liblua5.1-0-dev, pkg-config
 Standards-Version: 3.8.0
 

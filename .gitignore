@@ -1,9 +1,13 @@
+*-stamp
+*.o
 Makefile
 bibtex.lua
-build-arch-stamp
-build-indep-stamp
 natbib.nbs
-nbib.o
+nbib.aux
+nbib.dvi
+nbib.log
+nbib.pdf
+nbib.tex
+nbib.toc
 nbibtex
 nbibtex.1
-*.o
