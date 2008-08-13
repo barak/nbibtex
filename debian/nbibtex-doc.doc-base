@@ -1,9 +1,0 @@
-Document: nbibtex-literate-source
-Title: A Replacement for BibTeX
-Author: Norman Ramsey
-Abstract: The 'literate programming' source for nbibtex; useful for
- creating new nbibtex styles.
-Section: Text
-
-Format: PostScript
-Files: /usr/share/doc/nbibtex-doc/nbib.ps.gz
