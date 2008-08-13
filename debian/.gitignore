@@ -1,0 +1,7 @@
+/*.debhelper
+/*.log
+/*.substvars
+/files
+/nbibtex-doc/
+/nbibtex/
+/tmp/
