@@ -43,7 +43,7 @@ EOF
 	*) echo "Usage: $0 --help"; exit 1 ;;
     esac
 done
-      
+
 ######################################################################33
 #
 # search for lua
@@ -53,16 +53,16 @@ LF=
 
 if [ -x "$(which pkg-config 2>/dev/null)" ]; then
 
-  CF="$(pkg-config --cflags lua5.1)"
-  LF="$(pkg-config --libs   lua5.1)"
+    CF="$(pkg-config --cflags lua5.1)"
+    LF="$(pkg-config --libs   lua5.1)"
 
-  if [ -z "$CF" ]; then
-    echo "Don't know how to find include files for Lua 5.1"; exit 1
-  fi
+    if [ -z "$CF" ]; then
+	echo "Don't know how to find include files for Lua 5.1"; exit 1
+    fi
 
-  if [ -z "$LF" ]; then
-    echo "Don't know how to find libraries for Lua 5.1"; exit 1
-  fi
+    if [ -z "$LF" ]; then
+	echo "Don't know how to find libraries for Lua 5.1"; exit 1
+    fi
 
 fi
 
@@ -76,53 +76,53 @@ lua40=
 lua50=
 
 if [ -z "$CF" ]; then
-  for i in $LUAI; do
-    if [ -r $i/lua.h ] && grep 'LUA_VERSION.* 5\.1' $i/lua.h > /dev/null; then
-      CF="-I$i"
-      break
-    elif [ -r $i/lua.h ] && grep 'LUA_VERSION.* 5\.0' $i/lua.h > /dev/null; then
-      lua50=true
-    elif [ -r $i/lua.h ] && grep 'LUA_VERSION.* 4\.0' $i/lua.h > /dev/null; then
-      lua40=true
-    fi
-  done
+    for i in $LUAI; do
+	if [ -r $i/lua.h ] && grep 'LUA_VERSION.* 5\.1' $i/lua.h > /dev/null; then
+	    CF="-I$i"
+	    break
+	elif [ -r $i/lua.h ] && grep 'LUA_VERSION.* 5\.0' $i/lua.h > /dev/null; then
+	    lua50=true
+	elif [ -r $i/lua.h ] && grep 'LUA_VERSION.* 4\.0' $i/lua.h > /dev/null; then
+	    lua40=true
+	fi
+    done
 fi
 
 if [ -z "$LF" ]; then
-  L1=
-  for i in $LIBS; do
-    if [ -r $i/liblua5.1.so ]; then
-      LF="-L$i"
-      L1="-lliblua5.1"
-      break
-    fi
-  done
-  if [ -z "$L1" ]; then
+    L1=
     for i in $LIBS; do
-      if [ -r $i/liblua.so ]; then
-        if [ "x$LF" != "x-L$i" ]; then LF="$LF -L$i"; fi
-        L1="-lliblua"
-        break
-      fi
+	if [ -r $i/liblua5.1.so ]; then
+	    LF="-L$i"
+	    L1="-lliblua5.1"
+	    break
+	fi
     done
-  fi
-  if [ -n "$L1" ]; then
-    LF="$LF $L1"
-  else
-    LF=
-  fi
+    if [ -z "$L1" ]; then
+	for i in $LIBS; do
+	    if [ -r $i/liblua.so ]; then
+		if [ "x$LF" != "x-L$i" ]; then LF="$LF -L$i"; fi
+		L1="-lliblua"
+		break
+	    fi
+	done
+    fi
+    if [ -n "$L1" ]; then
+	LF="$LF $L1"
+    else
+	LF=
+    fi
 fi
 
 if [ -z "$CF" ]; then
-  echo "Don't know how to find include files for Lua 5.0"; exit 1
+    echo "Don't know how to find include files for Lua 5.0"; exit 1
 fi
 
 if [ -z "$LF" ]; then
-  echo "Don't know how to find libraries for Lua 5.0"
-  if [ -n "$lua40" ]; then echo "(I did find an include file for Lua 4.0)"; fi
-  if [ -n "$lua40" ]; then echo "(I did find an include file for Lua 4.0)"; fi
-  if [ -n "$lua51" ]; then echo "(I did find an include file for Lua 5.1, but nbibtex requires Lua 5.0)"; fi
-  exit 1
+    echo "Don't know how to find libraries for Lua 5.0"
+    if [ -n "$lua40" ]; then echo "(I did find an include file for Lua 4.0)"; fi
+    if [ -n "$lua40" ]; then echo "(I did find an include file for Lua 4.0)"; fi
+    if [ -n "$lua51" ]; then echo "(I did find an include file for Lua 5.1, but nbibtex requires Lua 5.0)"; fi
+    exit 1
 fi
 
 echo "Lua: OK"
@@ -141,7 +141,7 @@ local config = { nbs = "$SHARE" }
 EOF
 
 if [ $plain_compatible = false ]; then
-  compatibility='Two of these styles\
+    compatibility='Two of these styles\
 .RB ( abbrvnat \
 and\
 .BR unsrtnat )\
@@ -153,7 +153,7 @@ the Chicago Manual of Style. \
 A compatible version is available as style \
 .BR plainnatc .'
 else
-  compatibility='These styles \
+    compatibility='These styles \
 .RB ( plainnat , \
 .BR abbrvnat , \
 and \
@@ -168,7 +168,7 @@ fi
 
 sed -e "s@<NBSDIR>@$prefix/share/nbibtex@g" \
     -e "s@<compatibility>@$compatibility@" \
-  < nbibtex.1.in > nbibtex.1
+    < nbibtex.1.in > nbibtex.1
 
 
 cat <<EOF - natbib.nbs.in > natbib.nbs
