@@ -11,6 +11,7 @@ CPPDEFS=-DSHARE='"${datasubdir}"'
 
 all: nbibtex
 # all: nbib.pdf
+# all: nbib.ps
 
 nbibtex: $(OBJS)
 
@@ -32,6 +33,7 @@ clean:
 
 distclean: clean
 	rm -f Makefile bibtex.lua natbib.nbs nbibtex.1
+#	rm -f nbib.c nbibtex.c nbib.tex nbib.ps
 
 .PHONY: all install uninstall clean distclean
 
@@ -39,6 +41,9 @@ nbib.tex: nbib.nw
 	noweb -o $<
 	sed 's/<VERSION>/$(VERSION)/' < $@ > $@.subst
 	mv $@.subst $@
+
+#nbib.c nbibtex.c: nbib.nw
+#	rm -f $@; noweb -t $<
 
 ## rubber f = fixedpoint latex f
 
