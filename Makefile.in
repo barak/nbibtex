@@ -1,35 +1,39 @@
 
 bindir=$(prefix)/bin
 datarootdir=$(prefix)/share
-datalibdir=$(prefix)/share/nbibtex
+datadir=$(datarootdir)
+datasubdir=$(datadir)/nbibtex
 
 VERSION=$(shell cat VERSION)
 
 OBJS=nbib.o nbibtex.o boyer-moore.o
+CPPDEFS=-DSHARE='"${datasubdir}"'
 
 all: nbibtex
 # all: nbib.pdf
 
 nbibtex: $(OBJS)
-	$(CC) -o nbibtex $(OBJS) $(LDFLAGS) 
 
 install: nbibtex
-	for i in $(datalibdir) $(bindir) $(mandir)/man1; do install -d $(DESTDIR)$$i; done
-	install -m644 bibtex.lua natbib.nbs $(DESTDIR)$(datalibdir)/
+	for i in $(datasubdir) $(bindir) $(mandir)/man1; do install -d $(DESTDIR)$$i; done
+	install -m644 bibtex.lua natbib.nbs $(DESTDIR)$(datasubdir)/
 	install -m644 nbibtex.1 nbibfind.1 $(DESTDIR)$(mandir)/man1/
 	install -m755 nbibtex $(DESTDIR)$(bindir)/
 	ln --force $(DESTDIR)$(bindir)/nbibtex $(DESTDIR)$(bindir)/nbibfind
 
 uninstall: 
-	rm $(DESTDIR)$(datalibdir)/bibtex.lua $(DESTDIR)$(datalibdir)/natbib.nbs
+	rm $(DESTDIR)$(datasubdir)/bibtex.lua $(DESTDIR)$(datasubdir)/natbib.nbs
 	rm $(DESTDIR)$(mandir)/man1/nbibtex.1 $(DESTDIR)$(mandir)/man1/nbibfind.1
 	rm $(DESTDIR)$(bindir)/nbibtex $(DESTDIR)$(bindir)/nbibfind
-	rmdir $(DESTDIR)$(datalibdir)
+	rmdir $(DESTDIR)$(datasubdir)
 
 clean:
 	rm -f $(OBJS) nbibtex
 
 distclean: clean
+	rm -f Makefile bibtex.lua natbib.nbs nbibtex.1
+
+.PHONY: all install uninstall clean distclean
 
 nbib.tex: nbib.nw
 	noweb -o $<
@@ -41,8 +45,8 @@ nbib.tex: nbib.nw
 nbib.pdf: nbib.tex
 	rubber --warn=all --verbose --pdf $<
 
-nbib.ps.gz: nbib.tex
-	rubber --warn=all --verbose --ps --gzip $<
+nbib.ps: nbib.tex
+	rubber --warn=all --verbose --ps $<
 
 ## NOTES
 

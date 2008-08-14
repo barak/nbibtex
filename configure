@@ -132,8 +132,8 @@ echo "Lua: OK"
 cat <<EOF - Makefile.in > Makefile
 prefix=${prefix}
 mandir=${mandir}
-CFLAGS=$CF -DSHARE='"\${SHARE}"'
-LDFLAGS=$LF
+CPPFLAGS+=$CF \$(CPPDEFS)
+LOADLIBES=$LF
 EOF
 
 cat <<EOF - bibtex.lua.in > bibtex.lua
