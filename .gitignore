@@ -1,7 +1,14 @@
 /*-stamp
 *.o
+/*.aux
+/*.bbl
+/*.blg
+/*.dvi
+/*.log
+/*.toc
 /Makefile
 /bibtex.lua
 /natbib.nbs
+/nbib.tex
 /nbibtex
 /nbibtex.1
