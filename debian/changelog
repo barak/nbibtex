@@ -1,8 +1,9 @@
-nbibtex (0.9.18-4rc) unstable; urgency=low
+nbibtex (0.9.18-4) unstable; urgency=low
 
-  * placeholder
+  * looking for data in all the wrong places (fixed support file directory
+    bug introduced in 0.9.18-3 local mods)
 
- -- Barak A. Pearlmutter <bap@debian.org>  Wed, 13 Aug 2008 15:10:41 +0200
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 14 Aug 2008 10:10:53 +0200
 
 nbibtex (0.9.18-3) unstable; urgency=low
 
