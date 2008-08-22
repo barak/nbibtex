@@ -9,6 +9,10 @@
 /Makefile
 /bibtex.lua
 /natbib.nbs
+/nbib.c
+/nbib.pdf
+/nbib.ps
 /nbib.tex
 /nbibtex
 /nbibtex.1
+/nbibtex.c
