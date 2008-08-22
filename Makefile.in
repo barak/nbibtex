@@ -11,7 +11,7 @@ CPPDEFS=-DSHARE='"${datasubdir}"'
 
 all: nbibtex
 # all: nbib.pdf
-# all: nbib.ps
+all: nbib.ps
 
 nbibtex: $(OBJS)
 
@@ -33,17 +33,15 @@ clean:
 
 distclean: clean
 	rm -f Makefile bibtex.lua natbib.nbs nbibtex.1
-#	rm -f nbib.c nbibtex.c nbib.tex nbib.ps
+	rm -f nbib.c nbibtex.c nbib.tex nbib.ps nbib.pdf
 
 .PHONY: all install uninstall clean distclean
 
-nbib.tex: nbib.nw
-	noweb -o $<
-	sed 's/<VERSION>/$(VERSION)/' < $@ > $@.subst
-	mv $@.subst $@
+nbib.c nbibtex.c: nbib.nw
+	notangle -R$@ -L nbib.nw | sed 's/<VERSION>/$(VERSION)/' > $@
 
-#nbib.c nbibtex.c: nbib.nw
-#	rm -f $@; noweb -t $<
+nbib.tex: nbib.nw
+	noweave nbib.nw | tail -n +2 | sed 's/<VERSION>/$(VERSION)/' > $@
 
 ## rubber f = fixedpoint latex f
 
@@ -56,4 +54,4 @@ nbib.ps: nbib.tex
 ## NOTES
 
 # Makefile bibtex.lua natbib.nbs nbibtex.1: Makefile.in bibtex.lua.in natbib.nbs.in nbibtex.1.in
-# 	./configure --debian
+# 	./configure
