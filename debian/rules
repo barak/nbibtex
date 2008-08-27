@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
-# copy of /usr/share/doc/debhelper/examples/rules.simple
+# started with /usr/share/doc/debhelper/examples/rules.simple
 
 build: build-stamp
 build-stamp:
@@ -10,8 +10,8 @@ build-stamp:
 clean:
 	dh clean
 
-install: build install-stamp
-install-stamp:
+install: install-stamp
+install-stamp: build
 	dh install
 	touch install-stamp
 
