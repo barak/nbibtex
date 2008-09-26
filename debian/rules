@@ -1,26 +1,7 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
-# started with /usr/share/doc/debhelper/examples/rules.simple
 
-build: build-stamp
-build-stamp:
-	dh build
-	touch build-stamp
-
-clean:
-	dh clean
-
-install: install-stamp
-install-stamp: build
-	dh install
-	touch install-stamp
-
-binary-arch: install
-	dh binary-arch
-
-binary-indep: install
-	dh binary-indep
-
-binary: binary-arch binary-indep
+build clean install binary-arch binary-indep binary:
+	dh $@
 
 .PHONY: build clean install binary-arch binary-indep binary
