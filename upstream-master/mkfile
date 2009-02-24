@@ -1,0 +1,190 @@
+<$HOME/lib/mk/builtins
+<$HOME/lib/mk/so
+XCFLAGS=-g
+SHAREFLAG= -DSHARE='"/usr/local/share/nbibtex"'
+CFLAGS=-ansi -pedantic -Wall -I/usr/include/lua5.1 $XCFLAGS $SHAREFLAG
+LDFLAGS=$XCFLAGS
+
+LUA=lua5.1
+
+PVERSION=0.9.18
+VERSION=0.9.19
+DISTDIR=nbibtex-$VERSION
+
+
+all:V: bibtex.lua bibtex.so
+dvi:V: nbib.dvi
+update:V: bibtex.lua bibtex.so
+	copy -v bibtex.so $LIB
+
+undef:V: bibtex.lua natbib.nbs
+	lua-undef-globals -ok nrlib -ok bibtex -ok boyer_moore -ok config bibtex.lua
+	lua-undef-globals -ok bibtex natbib.nbs
+
+
+bibtex.so: nbib.c
+
+nbib.tex:D: nbib.nw mkfile
+	noweave -delay -filter "./vfilter $VERSION" -x nbib.nw > $target
+
+obibtex.lua:D: nbib.nw l2h-macros
+	chmod +w $target 2> /dev/null || true
+	notangle -R$target $DOCSFILTER nbib.nw > $target
+	chmod -w $target
+
+bibtex.lua:D: nbib.nw l2h-macros asciidocs
+	set -x
+	chmod +w bibtex.lua 2> /dev/null || true
+	no tangle -e 'do_nwfile("./blockify.lua")' \
+	  -Rbibtex.lua \
+          -ifilter 'Stages.blockify' \
+	  -filter './asciidocs -lua' \
+	  nbib.nw > bibtex.lua
+	chmod -w bibtex.lua
+
+
+nbib.c:D: nbib.nw
+	notangle -R$target -L $prereq > $target
+
+nbibtex.c:D: nbib.nw
+	notangle -R$target -L $prereq > $target
+
+a.out: nbib.o nbibtex.o ../boyer-moore.o
+	$CC $LDFLAGS -o $target $prereq `pkg-config --libs lua5.1`
+
+test:V: update
+	cd /tmp
+	$LUA ~/src/lua/bibtex.lua
+	$LUA << 'EOF'
+	require 'bibtex'
+	--bibtex.cat('/home/nr/lib/bibtex/ramsey.bib')
+	print(bibtex.bst.title('The {\\TeX BOOK\\NOOP} Experience'))
+	bibtex.run_find { '-full', 'ramsey-Olinsky', 'ramsey', [0] = 'bibfind' }
+	--bibtex.dump('/home/nr/lib/bibtex/ramsey.bib')
+	EOF
+
+btest:V: update
+	cd $HOME/noweb/papers/pipeline
+	$LUA << 'EOF'
+	require 'bibtex'
+	require 'nbib-natbib'
+	bibtex.register_style('nchicago', bibtex.style 'plainnatx') -- lies
+	bibtex.run('pipeline', true)
+	EOF
+
+dump:V: update
+	$LUA << 'EOF'
+	require 'bibtex'
+	bibtex.cat('test.bib')
+	EOF
+
+parse:V: parsename.nbl
+
+parsename.nbl:DQ: update parsename.aux $HOME/lib/bibtex/cs.bib $HOME/lib/bibtex/simon.bib
+	echo help me!!!
+	bib=`awk '/bibdata/ { gsub(/.*{/, ""); gsub(/}.*/, ""); print }' parsename.aux`
+	echo dump $bib
+	> $target $LUA << EOF
+	require 'bibtex'
+	bibtex.dump('/home/nr/lib/bibtex/$bib.bib')
+	EOF
+	exit $?
+
+parsename.bbl: $HOME/lib/bibtex/cs.bib $HOME/lib/latex/parsename.bst
+	bibtex parsename > /dev/null
+
+parse-test:V: parsename.nbl parsename.bbl
+	diff -b parsename.bbl parsename.nbl
+
+count-test:VQ: update
+	$LUA << 'EOF'
+	require 'bibtex'
+	count = bibtex.bst.text_length
+	function len(s, n)
+	  io.stdout:write(string.format('text_length(%q) == %d\n',
+	       s, count(s)))
+	  if n and count(s) ~= n then
+	    io.stdout:write('Count is wrong for ', s, '\n')
+	    os.exit(1)
+          end
+        end
+	len('Hello', 5)
+	len('{Simon}', 5)
+	len('G{\\"u}nther', 7)
+	len('Mama {MIA}', 8)
+	EOF
+	
+
+
+BIGBIBS=sigplan simon compilers cs all drhrefs jwd appel toplas cristina bcp
+PLAINTESTS=${BIGBIBS:%=d-plain-%}
+PLAINCTESTS=${BIGBIBS:%=d-plainc-%}
+ABBRVTESTS=${BIGBIBS:%=d-abbrv-%}
+UNSRTTESTS=${BIGBIBS:%=d-unsrt-%}
+
+d-plain:V: $PLAINTESTS
+d-plainc:V: $PLAINCTESTS
+d-abbrv:V: $ABBRVTESTS
+d-unsrt:V: $UNSRTTESTS
+
+regress:V: d-plain d-plainc d-unsrt d-abbrv
+
+
+'^'d-(abbrv|plainc|plain|unsrt)-(.*)'$':RV: '\1'-'\2'.bbl '\1'-'\2'.nbl
+	diff -u $stem1-$stem2.bbl $stem1-$stem2.nbl
+
+
+'^'(abbrv|plain|plainc|unsrt)-(.*)'\.'nbl'$':R: '\1'-'\2'.aux update $HOME/lib/bibtex/'\2'.bib natbib.nbs
+	nbibtex -o $target $stem1-$stem2
+
+%.aux: %.tex
+	latex $stem
+
+'^'(abbrv|plain|plainc|unsrt)-(.*)'\.'bbl'$':ER: '\1'-'\2'.aux $HOME/lib/bibtex/'\2'.bib $HOME/lib/latex/plainnatx.bst
+	bibtex $stem1-$stem2
+
+'^'(abbrv|plain|plainc|unsrt)-(.*)'\.'tex'$':DQR: mkfile
+	bst=${stem1}nat
+	case $bst in plainnat) bst=plainnatx ;; plaincnat) bst=plainnat ;; esac
+	cpif $target << EOF
+	\documentclass{article}
+	\usepackage{url,natbib}
+	\providecommand\emdash{---}
+	\providecommand\includeftpref{---}
+	\providecommand\FWEB{FWEB}
+	\begin{document}
+	\nocite{*}
+	\bibliographystyle{$bst}
+	\bibliography{$stem2}
+	\end{document}
+	EOF
+	echo "Emitted $target"
+
+clean:V:
+	rm -f {abbrv,plain,plainc,unsrt}-*.{tex,aux,blg,nlg,bbl,nbl,dvi,log}
+
+dist:VQ: nbib.c nbibtex.c bibtex.lua natbib.nbs nbibtex.1 nbibfind.1 README configure \
+ 	 nbib.ps nbib.nw INSTALL fun.tex
+	mkdir -p delenda
+	if [ -d $DISTDIR ]; then mv $DISTDIR delenda/`basename $DISTDIR`-$$ ; fi
+	mkdir -p $DISTDIR
+	(cd ..; mk boyer-moore.c)
+	copy -v $prereq ../boyer-moore.c $DISTDIR
+	copy -v Makefile.dist $DISTDIR/Makefile.in
+	for i in bibtex.lua natbib.nbs nbibtex.1; do
+	  mv $DISTDIR/$i $DISTDIR/$i.in
+	done
+
+tar: dist
+	tar czf nbibtex-$VERSION.tar.gz $DISTDIR
+
+debian:VQ: tar
+	rm -rf $DISTDIR
+	if [ "$PVERSION" != "$VERSION" -a -d nbibtex-$PVERSION ]; then
+	  echo "# To finish build,"
+          echo "  ./debian-update $PVERSION $VERSION"
+	else
+	  echo "Change to older directory and run"
+	  echo "  uupdate -u nbibtex-$VERSION.tar.gz"
+	fi
+	
