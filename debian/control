@@ -4,6 +4,8 @@ Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 7), autotools-dev, liblua5.1-0-dev, pkg-config, noweb, rubber, texlive-latex-extra, texlive-latex-recommended
 Standards-Version: 3.8.0
+Vcs-Git: git://git.debian.org/git/collab-maint/nbibtex.git
+Vcs-Browser: http://git.debian.org/?p=collab-maint/nbibtex.git
 
 Package: nbibtex
 Architecture: any
