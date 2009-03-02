@@ -3,7 +3,6 @@
 DESTDIR=
 PREFIX=usr/local
 debian=
-plain_compatible=false
 
 while [ $# -gt 0 ]
 do
@@ -13,16 +12,14 @@ do
 Usage: $0 [options]
 
 Options:
-  --help         This message
-  --debian       Configure to build debian package
-  --compat[ible] Bibliography style 'plainnat' identical to standard
-  --prefix==     Set installation prefix [default $PREFIX]
+  --help       This message
+  --debian     Configure to build debian package
+  --prefix==  Set installation prefix [default $PREFIX]
 EOF
       exit 0
       ;;
    --prefix=*) PREFIX="`echo $2 | sed 's/.*=//'`" ; shift ; shift ;;
    --debian) debian=1 ; PREFIX=usr ; shift ;;
-   --compat|--compatible) plain_compatible=true ; shift ;;
    *) echo "Usage: $0 -- help"; exit 1 ;;
   esac
 done
@@ -36,47 +33,49 @@ LF=
 
 if [ -x "`which pkg-config 2>/dev/null`" ]; then
 
-  CF="`pkg-config --cflags lua5.1`"
-  LF="`pkg-config --libs   lua5.1`"
+  CF="`pkg-config --cflags lua50`"
+  LF="`pkg-config --libs   lua50`"
 
   if [ -z "$CF" ]; then
-    echo "Don't know how to find include files for Lua 5.1"; exit 1
+    echo "Don't know how to find include files for Lua 5.0"; exit 1
   fi
 
   if [ -z "$LF" ]; then
-    echo "Don't know how to find libraries for Lua 5.1"; exit 1
+    echo "Don't know how to find libraries for Lua 5.0"; exit 1
   fi
+
+  LF="$LF `pkg-config --libs   lualib50`"
 
 fi
 
-LUAI="/usr/include/lua5.1 /usr/local/include/lua5.1 /usr/include /usr/local/include"
-LUAI="$LUAI /usr/local/lua5.1/include /usr/local/lua/include /usr/include/lua"
+LUAI="/usr/include/lua50 /usr/local/include/lua50 /usr/include /usr/local/include"
+LUAI="$LUAI /usr/local/lua50/include /usr/local/lua/include /usr/include/lua"
 
 LIBS="/lib /usr/lib /usr/local/lib"
 
-lua51=
-lua40=
-lua50=
-
 if [ -z "$CF" ]; then
   for i in $LUAI; do
-    if [ -r $i/lua.h ] && grep 'LUA_VERSION.* 5\.1' $i/lua.h > /dev/null; then
+    if [ -r $i/lua.h ] && grep 'LUA_VERSION.* 5\.0' $i/lua.h > /dev/null; then
       CF="-I$i"
       break
-    elif [ -r $i/lua.h ] && grep 'LUA_VERSION.* 5\.0' $i/lua.h > /dev/null; then
-      lua50=true
-    elif [ -r $i/lua.h ] && grep 'LUA_VERSION.* 4\.0' $i/lua.h > /dev/null; then
-      lua40=true
     fi
   done
 fi
 
 if [ -z "$LF" ]; then
   L1=
+  L2=
   for i in $LIBS; do
-    if [ -r $i/liblua5.1.so ]; then
+    if [ -r $i/liblua50.so ]; then
       LF="-L$i"
-      L1="-lliblua5.1"
+      L1="-lliblua50"
+      break
+    fi
+  done
+  for i in $LIBS; do
+    if [ -r $i/liblualib50.so ]; then
+      if [ "x$LF" != "x-L$i" ]; then LF="$LF -L$i"; fi
+      L2="-lliblualib50"
       break
     fi
   done
@@ -89,8 +88,17 @@ if [ -z "$LF" ]; then
       fi
     done
   fi
-  if [ -n "$L1" ]; then
-    LF="$LF $L1"
+  if [ -z "$L2" ]; then
+    for i in $LIBS; do
+      if [ -r $i/liblualib.so ]; then
+        if [ "x$LF" != "x-L$i" ]; then LF="$LF -L$i"; fi
+        L2="-lliblualib"
+        break
+      fi
+    done
+  fi
+  if [ -n "$L1" -a -n "$L2" ]; then
+    LF="$LF $L1 $L2"
   else
     LF=
   fi
@@ -101,11 +109,7 @@ if [ -z "$CF" ]; then
 fi
 
 if [ -z "$LF" ]; then
-  echo "Don't know how to find libraries for Lua 5.0"
-  if [ -n "$lua40" ]; then echo "(I did find an include file for Lua 4.0)"; fi
-  if [ -n "$lua40" ]; then echo "(I did find an include file for Lua 4.0)"; fi
-  if [ -n "$lua51" ]; then echo "(I did find an include file for Lua 5.1, but nbibtex requires Lua 5.0)"; fi
-  exit 1
+  echo "Don't know how to find libraries for Lua 5.0"; exit 1
 fi
 
 echo "Lua: OK"
@@ -118,14 +122,19 @@ else
   setdest=
 fi
 
-dollar='$'
-
 cat <<EOF > Makefile
 $setdest
-SHARE=$dollar(DESTDIR)/$PREFIX/share/nbibtex
-BIN=$dollar(DESTDIR)/$PREFIX/bin
-MAN1=$dollar(DESTDIR)/$PREFIX/share/man/man1
+prefix=$PREFIX
 EOF
+
+cat <<'XXX' >> Makefile
+SHARE=$(DESTDIR)/$(prefix)/share/nbibtex
+BIN=$(DESTDIR)/$(prefix)/bin
+MAN1=$(DESTDIR)/$(prefix)/share/man/man1
+
+XXX
+
+dollar='$'
 
 cat <<EOF >> Makefile
 CFLAGS=$CF -DSHARE='"$dollar(SHARE)"'
@@ -138,39 +147,3 @@ cat Makefile.in >> Makefile
 cat <<EOF - bibtex.lua.in > bibtex.lua
 local config = { nbs = "$SHARE" }
 EOF
-
-if [ $plain_compatible = false ]; then
-  compatibility='Two of these styles\
-.RB ( abbrvnat \
-and\
-.BR unsrtnat )\
-are completely compatible with the corresponding \\*(OB styles;\
-the third style \
-.RB ( plainnat ) \
-has been changed to more closely follow   \
-the Chicago Manual of Style. \
-A compatible version is available as style \
-.BR plainnatc .'
-else
-  compatibility='These styles \
-.RB ( plainnat , \
-.BR abbrvnat , \
-and \
-.BR unsrtnat ) \
-are completely compatible with the corresponding \\*(OB styles. \
-An improved version of the "plain" style, \
-which more closely follows the  Chicago Manual of Style, \
-is available as style \
-.BR plainnatx .' 
-fi
-
-
-sed -e "s@<NBSDIR>@$DESTDIR/$PREFIX/share/nbibtex@g" \
-    -e "s@<compatibility>@$compatibility@" \
-  < nbibtex.1.in > nbibtex.1
-
-
-cat <<EOF - natbib.nbs.in > natbib.nbs
-local plain_compatible = $plain_compatible
-EOF
-

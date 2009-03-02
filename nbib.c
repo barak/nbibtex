@@ -1,4 +1,4 @@
-#line 158 "nbib.nw"
+#line 110 "nbib.nw"
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
@@ -9,7 +9,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#line 205 "nbib.nw"
+#line 157 "nbib.nw"
 typedef struct bibreader {
   const char *filename;             /* name of the .bib file */
   FILE *file;                       /* .bib file open for read */
@@ -25,11 +25,11 @@ typedef struct bibreader {
   int warning;        /* reference to universal warning function */
   int macros;         /* reference to macro table */
 } *Bibreader;
-#line 237 "nbib.nw"
+#line 189 "nbib.nw"
 typedef int bool;
-#line 242 "nbib.nw"
+#line 194 "nbib.nw"
 static bool getline(Bibreader rdr);
-#line 251 "nbib.nw"
+#line 203 "nbib.nw"
 static bool upto1(Bibreader rdr, char c);
 static bool upto1_getline(Bibreader rdr, char c);
 static void upto_white_or_1(Bibreader rdr, char c);
@@ -37,42 +37,42 @@ static void upto_white_or_2(Bibreader rdr, char c1, char c2);
 static void upto_white_or_3(Bibreader rdr, char c1, char c2, char c3);
 static bool upto_nonwhite(Bibreader rdr);
 static bool upto_nonwhite_getline(Bibreader rdr);
-#line 266 "nbib.nw"
+#line 218 "nbib.nw"
 static bool scan_identifier (Bibreader rdr, char c1, char c2, char c3);
 static bool scan_nonneg_integer (Bibreader rdr, unsigned *np);
-#line 272 "nbib.nw"
+#line 224 "nbib.nw"
 static bool scan_and_buffer_a_field_token (Bibreader rdr, int key, luaL_Buffer *b);
 static bool scan_balanced_braces(Bibreader rdr, char close, luaL_Buffer *b);
 static bool scan_and_push_the_field_value (Bibreader rdr, int key);
-#line 282 "nbib.nw"
+#line 234 "nbib.nw"
 static void lower_case(unsigned char *p, unsigned char *lim);
 static void strip_leading_and_trailing_space(lua_State *L);
-#line 287 "nbib.nw"
+#line 239 "nbib.nw"
 static int get_bib_command_or_entry_and_process(Bibreader rdr);
 int luaopen_bibtex (lua_State *L);
-#line 297 "nbib.nw"
+#line 249 "nbib.nw"
 typedef bool (*Command)(Bibreader);
 static Command find_command(unsigned char *p, unsigned char *lim);
 static bool do_comment (Bibreader rdr);
 static bool do_preamble(Bibreader rdr);
 static bool do_string  (Bibreader rdr);
-#line 314 "nbib.nw"
+#line 266 "nbib.nw"
 static void warnv(Bibreader rdr, int nres, const char *fmt, ...);
-#line 1044 "nbib.nw"
+#line 998 "nbib.nw"
 static int openreader(lua_State *L);
 static int next_entry(lua_State *L);
 static int closereader(lua_State *L);
-#line 224 "nbib.nw"
+#line 176 "nbib.nw"
 bool is_id_char[256];    /* needs initialization */
 #define concat_char '#'  /* used to concatenate parts of a field defn */
-#line 1048 "nbib.nw"
+#line 1002 "nbib.nw"
 static const struct luaL_reg bibtexlib [] = {
   {"open", openreader},
   {"close", closereader},
   {"next", next_entry},
   {NULL, NULL}
 };
-#line 323 "nbib.nw"
+#line 275 "nbib.nw"
 #define LERRPUSH(S) do { \
   if (!lua_checkstack(rdr->L, 10)) assert(0); \
   lua_pushboolean(rdr->L, 0); \
@@ -92,15 +92,15 @@ static const struct luaL_reg bibtexlib [] = {
   /* next: cases for Boolean functions */
 #define LERRB(S)   do { LERRPUSH(S);   return 0; } while(0)
 #define LERRFB(S,A) do { LERRFPUSH(S,A); return 0; } while(0)
-#line 510 "nbib.nw"
+#line 462 "nbib.nw"
 #undef ready_tok
 #define ready_tok(RDR) do { \
   if (!upto_nonwhite_getline(RDR)) \
     LERRB("Unexpected end of file"); \
   } while(0)
-#line 522 "nbib.nw"
+#line 474 "nbib.nw"
 #define copy_char(C) luaL_putchar(b, (C))
-#line 529 "nbib.nw"
+#line 481 "nbib.nw"
 static bool scan_and_push_the_field_value (Bibreader rdr, int key) {
   luaL_Buffer field;
 
@@ -116,7 +116,7 @@ static bool scan_and_push_the_field_value (Bibreader rdr, int key) {
   luaL_pushresult(&field);
   return 1;
 }
-#line 561 "nbib.nw"
+#line 513 "nbib.nw"
 static bool scan_and_buffer_a_field_token (Bibreader rdr, int key, luaL_Buffer *b) {
   unsigned char *p;
   unsigned number;
@@ -143,7 +143,7 @@ static bool scan_and_buffer_a_field_token (Bibreader rdr, int key, luaL_Buffer *
       lua_gettable(rdr->L, -2);                          /* stack: name defn */
       lua_remove(rdr->L, -2);                            /* stack: defn */
       
-#line 595 "nbib.nw"
+#line 547 "nbib.nw"
 { int t = lua_gettop(rdr->L);
   if (lua_isnil(rdr->L, -1)) {
     lua_pop(rdr->L, 1);
@@ -161,11 +161,11 @@ static bool scan_and_buffer_a_field_token (Bibreader rdr, int key, luaL_Buffer *
   }
   assert(lua_gettop(rdr->L) == t-1);
 }
-#line 587 "nbib.nw"
+#line 539 "nbib.nw"
       return 1;
   }
 }
-#line 621 "nbib.nw"
+#line 573 "nbib.nw"
 static int scan_balanced_braces(Bibreader rdr, char close, luaL_Buffer *b) {
   unsigned char *p, *cur, c;
   int braces = 0;  /* number of currently open braces *inside* string */
@@ -185,7 +185,7 @@ static int scan_balanced_braces(Bibreader rdr, char close, luaL_Buffer *b) {
     *rdr->lim = ' ';
     c = *cur;  /* will be whitespace if at end of line */
     
-#line 654 "nbib.nw"
+#line 606 "nbib.nw"
 if (isspace(c)) {
   copy_char(' ');
   ready_tok(rdr);
@@ -214,10 +214,10 @@ if (isspace(c)) {
     }
   }
 }
-#line 640 "nbib.nw"
+#line 592 "nbib.nw"
   }
 }
-#line 803 "nbib.nw"
+#line 755 "nbib.nw"
 static int scan_identifier (Bibreader rdr, char c1, char c2, char c3) {
   unsigned char *p, *orig, c;
 
@@ -236,7 +236,7 @@ static int scan_identifier (Bibreader rdr, char c1, char c2, char c3) {
     return 0;
   }
 }
-#line 828 "nbib.nw"
+#line 780 "nbib.nw"
 static bool scan_nonneg_integer (Bibreader rdr, unsigned *np) {
   unsigned char *p = rdr->cur;
   unsigned n = 0;
@@ -253,7 +253,7 @@ static bool scan_nonneg_integer (Bibreader rdr, unsigned *np) {
     return 1;
   }
 }
-#line 366 "nbib.nw"
+#line 318 "nbib.nw"
 #undef ready_tok
 #define ready_tok(RDR) do { \
   if (!upto_nonwhite_getline(RDR)) \
@@ -266,20 +266,20 @@ static int get_bib_command_or_entry_and_process(Bibreader rdr) {
   bool (*command)(Bibreader);
  getnext:
   
-#line 406 "nbib.nw"
+#line 358 "nbib.nw"
 if (!upto1_getline(rdr, '@'))
   return 0;  /* no more entries; return nil */
 assert(*rdr->cur == '@');
 rdr->cur++;   /* skip the @ sign */
 ready_tok(rdr);
 
-#line 379 "nbib.nw"
+#line 331 "nbib.nw"
   id = rdr->cur;
   if (!scan_identifier (rdr, '{', '(', '('))
     LERR("Expected an entry type");
   lower_case (id, rdr->cur);       /* ignore case differences */
   
-#line 413 "nbib.nw"
+#line 365 "nbib.nw"
 command = find_command(id, rdr->cur);
 if (command) {
   if (!command(rdr))
@@ -287,12 +287,12 @@ if (command) {
   goto getnext;
 }
 
-#line 385 "nbib.nw"
+#line 337 "nbib.nw"
   lua_pushlstring(rdr->L, (char *) id, rdr->cur - id);    /* push entry type */
   rdr->entry_line = rdr->line_num;
   ready_tok(rdr);
   
-#line 424 "nbib.nw"
+#line 376 "nbib.nw"
 if (*rdr->cur == '{') 
     rdr->entry_close = '}';
 else if (*rdr->cur == '(') 
@@ -300,24 +300,24 @@ else if (*rdr->cur == '(')
 else
     LERR("Expected entry to open with { or (");
 rdr->cur++;
-#line 389 "nbib.nw"
+#line 341 "nbib.nw"
   ready_tok(rdr);
   key = rdr->cur;
   
-#line 435 "nbib.nw"
+#line 387 "nbib.nw"
 if (rdr->entry_close == '}') {
   upto_white_or_1(rdr, ',');
 } else {
   upto_white_or_2(rdr, ',', '}');
 }
-#line 392 "nbib.nw"
+#line 344 "nbib.nw"
   lua_pushlstring(rdr->L, (char *) key, rdr->cur - key);  /* push database key */
   keyindex = lua_gettop(rdr->L);
   lua_newtable(rdr->L);                                   /* push table of fields */
   ready_tok(rdr);
   for (; *rdr->cur != rdr->entry_close; ) {
     
-#line 447 "nbib.nw"
+#line 399 "nbib.nw"
 if (*rdr->cur == ',') {
   rdr->cur++;
   ready_tok(rdr);
@@ -327,9 +327,9 @@ if (*rdr->cur == ',') {
 } else {
   LERR("Expected comma or end of entry");
 }
-#line 398 "nbib.nw"
+#line 350 "nbib.nw"
     
-#line 460 "nbib.nw"
+#line 412 "nbib.nw"
 if (id = rdr->cur, !scan_identifier (rdr, '=', '=', '='))
   LERR("Expected a field name");
 lower_case(id, rdr->cur);
@@ -342,7 +342,7 @@ ready_tok(rdr);
 if (!scan_and_push_the_field_value(rdr, keyindex))
   return 2;
 strip_leading_and_trailing_space(rdr->L);
-#line 488 "nbib.nw"
+#line 440 "nbib.nw"
 lua_pushvalue(rdr->L, -2);  /* push key */
 lua_gettable(rdr->L, -4);
 if (lua_isnil(rdr->L, -1)) {
@@ -356,13 +356,13 @@ if (lua_isnil(rdr->L, -1)) {
         lua_tostring(rdr->L, -2), lua_tostring(rdr->L, -1));
   lua_pop(rdr->L, 2);  /* off come key and new value */
 }
-#line 399 "nbib.nw"
+#line 351 "nbib.nw"
     ready_tok(rdr);
   }
   rdr->cur++;  /* skip past close of entry */
   return 3; /* entry type, key, table of fields */
 }
-#line 687 "nbib.nw"
+#line 639 "nbib.nw"
 static bool upto1(Bibreader rdr, char c) {
   unsigned char *p = rdr->cur;
   unsigned char *lim = rdr->lim;
@@ -372,14 +372,14 @@ static bool upto1(Bibreader rdr, char c) {
   rdr->cur = p;
   return p < lim;
 }
-#line 700 "nbib.nw"
+#line 652 "nbib.nw"
 static int upto1_getline(Bibreader rdr, char c) {
   while (!upto1(rdr, c))
     if (!getline(rdr))
       return 0;
   return 1;
 }
-#line 710 "nbib.nw"
+#line 662 "nbib.nw"
 static void upto_white_or_1(Bibreader rdr, char c) {
   unsigned char *p = rdr->cur;
   unsigned char *lim = rdr->lim;
@@ -388,7 +388,7 @@ static void upto_white_or_1(Bibreader rdr, char c) {
     p++;
   rdr->cur = p;
 }
-#line 721 "nbib.nw"
+#line 673 "nbib.nw"
 static void upto_white_or_2(Bibreader rdr, char c1, char c2) {
   unsigned char *p = rdr->cur;
   unsigned char *lim = rdr->lim;
@@ -397,7 +397,7 @@ static void upto_white_or_2(Bibreader rdr, char c1, char c2) {
     p++;
   rdr->cur = p;
 }
-#line 732 "nbib.nw"
+#line 684 "nbib.nw"
 static void upto_white_or_3(Bibreader rdr, char c1, char c2, char c3) {
   unsigned char *p = rdr->cur;
   unsigned char *lim = rdr->lim;
@@ -406,7 +406,7 @@ static void upto_white_or_3(Bibreader rdr, char c1, char c2, char c3) {
     p++;
   rdr->cur = p;
 }
-#line 745 "nbib.nw"
+#line 697 "nbib.nw"
 static bool upto_nonwhite(Bibreader rdr) {
   unsigned char *p = rdr->cur;
   unsigned char *lim = rdr->lim;
@@ -416,14 +416,14 @@ static bool upto_nonwhite(Bibreader rdr) {
   rdr->cur = p;
   return p < lim;
 }
-#line 758 "nbib.nw"
+#line 710 "nbib.nw"
 static int upto_nonwhite_getline(Bibreader rdr) {
   while (!upto_nonwhite(rdr))
     if (!getline(rdr))
       return 0;
   return 1;
 }
-#line 767 "nbib.nw"
+#line 719 "nbib.nw"
 static bool getline(Bibreader rdr) {
   char *result;
   unsigned char *buf = rdr->buf;
@@ -446,12 +446,12 @@ static bool getline(Bibreader rdr) {
   rdr->lim = buf+n-1;  /* trailing newline not in string */
   return 1; 
 }
-#line 874 "nbib.nw"
+#line 826 "nbib.nw"
 static void lower_case(unsigned char *p, unsigned char *lim) {
   for (; p < lim; p++)
     *p = tolower(*p);
 }
-#line 880 "nbib.nw"
+#line 832 "nbib.nw"
 static void strip_leading_and_trailing_space(lua_State *L) {
   const char *p;
   int n;
@@ -467,7 +467,7 @@ static void strip_leading_and_trailing_space(lua_State *L) {
     lua_remove(L, -2);
   }
 }
-#line 901 "nbib.nw"
+#line 853 "nbib.nw"
 static Command find_command(unsigned char *p, unsigned char *lim) {
   int n = lim - p;
   assert(lim > p);
@@ -479,15 +479,15 @@ static Command find_command(unsigned char *p, unsigned char *lim) {
   }
   return (Command)0;
 }
-#line 918 "nbib.nw"
+#line 870 "nbib.nw"
 static bool do_comment(Bibreader rdr) {
   return 1;
 }
-#line 940 "nbib.nw"
+#line 892 "nbib.nw"
 static bool do_preamble(Bibreader rdr) {
   ready_tok(rdr);
   
-#line 424 "nbib.nw"
+#line 376 "nbib.nw"
 if (*rdr->cur == '{') 
     rdr->entry_close = '}';
 else if (*rdr->cur == '(') 
@@ -495,10 +495,10 @@ else if (*rdr->cur == '(')
 else
     LERR("Expected entry to open with { or (");
 rdr->cur++;
-#line 943 "nbib.nw"
+#line 895 "nbib.nw"
   ready_tok(rdr);
   lua_rawgeti(rdr->L, LUA_REGISTRYINDEX, rdr->preamble);
-  lua_pushnumber(rdr->L, lua_objlen(rdr->L, -1) + 1);
+  lua_pushnumber(rdr->L, luaL_getn(rdr->L, -1) + 1);
   if (!scan_and_push_the_field_value(rdr, 0))
     return 0;
   ready_tok(rdr);
@@ -509,13 +509,13 @@ rdr->cur++;
   lua_pop(rdr->L, 1); /* remove preamble */
   return 1;
 }
-#line 979 "nbib.nw"
+#line 931 "nbib.nw"
 static bool do_string(Bibreader rdr) {
   unsigned char *id;
   int keyindex;
   ready_tok(rdr);
   
-#line 424 "nbib.nw"
+#line 376 "nbib.nw"
 if (*rdr->cur == '{') 
     rdr->entry_close = '}';
 else if (*rdr->cur == '(') 
@@ -523,7 +523,7 @@ else if (*rdr->cur == '(')
 else
     LERR("Expected entry to open with { or (");
 rdr->cur++;
-#line 984 "nbib.nw"
+#line 936 "nbib.nw"
   ready_tok(rdr);
   id = rdr->cur;
   if (!scan_identifier(rdr, '=', '=', '='))
@@ -548,11 +548,13 @@ rdr->cur++;
   lua_pop(rdr->L, 1);
   return 1;
 }
-#line 1013 "nbib.nw"
+#line 965 "nbib.nw"
 static Bibreader checkreader(lua_State *L, int index) {
-  return luaL_checkudata(L, index, "bibtex.reader");
+  Bibreader rdr = luaL_checkudata(L, index, "bibtex.reader");
+  luaL_argcheck(L, rdr != NULL, index, "bibtex reader expected");
+  return rdr;
 }
-#line 1023 "nbib.nw"
+#line 977 "nbib.nw"
 static int reader_meta_index(lua_State *L) {
   Bibreader rdr = checkreader(L, 1);
   const char *key;
@@ -571,7 +573,7 @@ static int reader_meta_index(lua_State *L) {
     lua_pushnil(L);
   return 1;
 }
-#line 1078 "nbib.nw"
+#line 1032 "nbib.nw"
 #define INBUF 128  /* initial size of input buffer */
 /* filename * macro table * warning function -> reader */
 static int openreader(lua_State *L) {
@@ -585,7 +587,7 @@ static int openreader(lua_State *L) {
   }
 
   
-#line 1114 "nbib.nw"
+#line 1068 "nbib.nw"
 if (lua_type(L, 2) == LUA_TNONE)
   lua_newtable(L);
 
@@ -594,7 +596,7 @@ if (lua_type(L, 3) == LUA_TNONE)
 else if (!lua_isfunction(L, 3))
   luaL_error(L, "Warning value to bibtex.open is not a function");
 
-#line 1092 "nbib.nw"
+#line 1046 "nbib.nw"
   rdr = lua_newuserdata(L, sizeof(*rdr));
   luaL_getmetatable(L, "bibtex.reader");
   lua_setmetatable(L, -2);
@@ -615,14 +617,14 @@ else if (!lua_isfunction(L, 3))
   rdr->warning = luaL_ref(L, LUA_REGISTRYINDEX);
   return 1;
 }
-#line 1128 "nbib.nw"
+#line 1082 "nbib.nw"
 static int next_entry(lua_State *L) {
   Bibreader rdr = checkreader(L, 1);
   if (!rdr->file)
     luaL_error(L, "Tried to read from closed bibtex.reader");
   return get_bib_command_or_entry_and_process(rdr);
 }  
-#line 1138 "nbib.nw"
+#line 1092 "nbib.nw"
 static int closereader(lua_State *L) {
   Bibreader rdr = checkreader(L, 1);
   if (!rdr->file)
@@ -643,7 +645,7 @@ static int closereader(lua_State *L) {
   rdr->macros = 0;
   return 0;
 }  
-#line 1162 "nbib.nw"
+#line 1116 "nbib.nw"
 static void warnv(Bibreader rdr, int nres, const char *fmt, ...) {
   const char *p;
   va_list vl;
@@ -671,16 +673,16 @@ static void warnv(Bibreader rdr, int nres, const char *fmt, ...) {
     va_end(vl);
   }
 }
-#line 1193 "nbib.nw"
+#line 1147 "nbib.nw"
 int luaopen_bibtex (lua_State *L) {
   luaL_newmetatable(L, "bibtex.reader");
   lua_pushstring(L, "__index");
   lua_pushcfunction(L, reader_meta_index);  /* pushes the index method */
   lua_settable(L, -3);  /* metatable.__index = metatable */
 
-  luaL_register(L, "bibtex", bibtexlib);
+  luaL_openlib(L, "bibtex", bibtexlib, 0);
   
-#line 1207 "nbib.nw"
+#line 1161 "nbib.nw"
 {
   unsigned c;
   static unsigned char *nonids = (unsigned char *)"\"#%'(),={} \t\n\f";
@@ -693,6 +695,6 @@ int luaopen_bibtex (lua_State *L) {
   for (p = nonids; *p; p++)
     is_id_char[*p] = 0;
 }
-#line 1201 "nbib.nw"
+#line 1155 "nbib.nw"
   return 1;
 }
