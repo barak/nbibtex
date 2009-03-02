@@ -1,4 +1,4 @@
-.TH NBIBTEX 1 "4 May 2006"
+.TH NBIBTEX 1 "15 May 2006"
 .\"=====================================================================
 .if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
 .if n .ds TX TeX
@@ -239,17 +239,41 @@ so longer words are usually faster.
 \*(BX's query language can be used on the command line by
 .BR nbibfind (1).
 .\"=====================================================================
+.SH NBIBTEX STYLES AND COMPATIBILITY WITH \*(OB
+Like \*(OB, \*(BX supports a variety of "styles" of bibliography.
+Each style is defined by a program written in Lua,
+using additional primitives suitable to construction of
+bibliographies.
+\*(BX provides the three standard styles in a form suitable for use
+.with the 
+.B natbib
+package.
+<compatibility>
+.PP
+Additional styles may be created by writing new Lua code;
+for example, an author wishing to create a style called
+.B mcbride
+would put a file called
+.B mcbride.nbs
+(for New \*(OB Style)
+in the directory
+.BR "<NBSDIR>" .
+For guidance on what goes into such a file,
+consult the other files in that directory and the literate source code
+for \*(BX.
+.\"=====================================================================
 .SH ENVIRONMENT
-\*(BX searches the directories in the
-path defined by the BSTINPUTS environment variable for
-.I .bst
-files. If BSTINPUTS is not set, it uses 
-the NBSINPUTS variable.
-If neither is set, it uses
-the system default.
+.\"\*(BX searches the directories in the
+.\"path defined by the BSTINPUTS environment variable for
+.\".I .bst
+.\"files. If BSTINPUTS is not set, it uses 
+.\"the NBSINPUTS variable.
+.\"If neither is set, it uses
+.\"the system default.
 For
 .I .bib
-files, it uses the BIBINPUTS environment variable if that is set,
+files, \*(BX searches the directories in the
+path defined by the BIBINPUTS environment variable if that is set,
 otherwise the default.
 For details of the searching, 
 see
@@ -269,8 +293,14 @@ file.
 .\"=====================================================================
 .SH FILES
 .TP
-.I *.nbs
+.I <NBSDIR>/*.nbs
 New bibliography style files.
+.\"=====================================================================
+.SH BUGS
+Although I have made some effort in this direction, compatibility with
+\*(BX does not extend to 
+.B ".bib"
+files containing non-ASCII characters.
 .\"=====================================================================
 .SH "SEE ALSO"
 .BR nbibfind (1),
@@ -285,6 +315,9 @@ Addison-Wesley, 1985, ISBN 0-201-15790-X.
 .br
 The \*(BX home page at
 .BR "http://www.eecs.harvard.edu/~nr/nbibtex" .
+.br
+The Lua home page at 
+.BR "http://www.lua.org" .
 .\"=====================================================================
 .SH AUTHOR
 Norman Ramsey, Harvard University.

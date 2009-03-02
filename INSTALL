@@ -8,3 +8,7 @@ Because I live in fear of gnu autoconfig, I have written a ./configure
 script by hand.  Maybe it does something useful.
 
 By default, the script installs into /usr/local.
+
+Options to ./configure include
+  --debian      configure as for Debian, including installation into /usr
+  --compatible  make the 'plainnat' style exactly compatible with BibTeX

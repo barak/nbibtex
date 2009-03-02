@@ -131,6 +131,9 @@ static const struct luaL_reg bmlib [] = {
     
 int luaopen_boyer_moore (lua_State *L) {
   luaL_newmetatable(L, MATMETA);
-  luaL_openlib(L, "boyer_moore", bmlib, 0);
+  luaL_register(L, "boyer_moore", bmlib);
   return 1;
+}
+int luaopen_moore (lua_State *L) {  /* tolerate 'boyer-moore.so' */
+  return luaopen_boyer_moore(L);
 }

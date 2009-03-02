@@ -1,4 +1,4 @@
-#line 1179 "nbib.nw"
+#line 1225 "nbib.nw"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -11,18 +11,15 @@ extern int luaopen_boyer_moore (lua_State *L);
 
 int main (int argc, char *argv[]) {
   int i, rc;
-  lua_State *L = lua_open();
+  lua_State *L = luaL_newstate();
   static const char* files[] = { SHARE "/bibtex.lua",  SHARE "/natbib.nbs" };
 
-  luaopen_base(L);
-  luaopen_table(L);
-  luaopen_io(L);
-  luaopen_loadlib(L);
-  luaopen_string(L);
-  luaopen_bibtex(L);
-  luaopen_boyer_moore(L);
+  #define OPEN(N) lua_pushcfunction(L, luaopen_ ## N); lua_call(L, 0, 0)
+  OPEN(base); OPEN(table); OPEN(io); OPEN(package); OPEN(string); OPEN(bibtex);
+  OPEN(boyer_moore);
+
   for (i = 0; i < sizeof(files)/sizeof(files[0]); i++) {
-    if (lua_dofile(L, files[i])) {
+    if (luaL_dofile(L, files[i])) {
       fprintf(stderr, "%s: error loading configuration file %s\n",
               argv[0], files[i]);
       exit(2);
