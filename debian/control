@@ -3,7 +3,7 @@ Section: tex
 Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 7), autotools-dev, liblua5.1-0-dev, pkg-config, noweb, rubber, texlive-latex-extra, texlive-latex-recommended
-Standards-Version: 3.8.0
+Standards-Version: 3.8.3
 Vcs-Git: git://git.debian.org/git/collab-maint/nbibtex.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/nbibtex.git
 
@@ -20,6 +20,7 @@ Description: Powerful, flexible replacement for bibtex
 
 Package: nbibtex-doc
 Architecture: all
+Depends: ${misc:Depends}
 Section: doc
 Description: Documentation of source code for nbibtex
  Includes the 'literate programming' source for nbibtex, which

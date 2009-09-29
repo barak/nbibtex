@@ -1,3 +1,10 @@
+nbibtex (0.9.18-7) unstable; urgency=low
+
+  * debian build process mods for lintian cleanliness
+  * rev deb std
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Tue, 29 Sep 2009 10:29:16 -0400
+
 nbibtex (0.9.18-6) unstable; urgency=low
 
   * build depend on texlive-latex-recommended (closes: #500319)
