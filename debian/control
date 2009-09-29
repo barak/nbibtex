@@ -20,6 +20,7 @@ Description: Powerful, flexible replacement for bibtex
 
 Package: nbibtex-doc
 Architecture: all
+Depends: ${misc:Depends}
 Section: doc
 Description: Documentation of source code for nbibtex
  Includes the 'literate programming' source for nbibtex, which
