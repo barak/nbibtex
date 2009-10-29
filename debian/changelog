@@ -1,3 +1,9 @@
+nbibtex (0.9.18-8) unstable; urgency=low
+
+  * rename getline (now stepped on by libc) to get_line (closes: #552880)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 29 Oct 2009 11:52:41 -0400
+
 nbibtex (0.9.18-7) unstable; urgency=low
 
   * debian build process mods for lintian cleanliness
