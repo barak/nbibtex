@@ -1,3 +1,9 @@
+nbibtex (0.9.18-9) unstable; urgency=low
+
+  * minor latex documentation fixes (bad label; typo)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Tue, 17 Nov 2009 10:43:39 -0500
+
 nbibtex (0.9.18-8) unstable; urgency=low
 
   * rename getline (now stepped on by libc) to get_line (closes: #552880)
