@@ -1219,8 +1219,9 @@ listed in the [[nonids]] string.
 @ 
 \subsection{Main function for the nbib commands}
 
-This code will is the standalone main function for all the nbib commands.
-\nextchunklabel{c-main}
+\label{c-main}
+
+This code is the standalone main function for all the nbib commands.
 <<nbibtex.c>>=
 #include <stdlib.h>
 #include <stdio.h>
@@ -1310,7 +1311,7 @@ How we get the C~code depends on how
 \begin{itemize}
 \item
 In the distribution, \texttt{bibtex.lua} is loaded by the C~code in
-chunk~\subpageref{c-main}, which defines the [[bibtex]] module.
+Section~\ref{c-main}, which defines the [[bibtex]] module.
 \item
 For standalone testing purposes, \texttt{bibtex.lua} can be loaded
 directly into an 
