@@ -1221,7 +1221,7 @@ listed in the [[nonids]] string.
 
 \label{c-main}
 
-This code will is the standalone main function for all the nbib commands.
+This code is the standalone main function for all the nbib commands.
 <<nbibtex.c>>=
 #include <stdlib.h>
 #include <stdio.h>
