@@ -1,0 +1,21 @@
+#!/usr/bin/env lua5.1
+-- -*- mode: lua -*-
+
+local function eprintf(...) return io.stderr:write(string.format(...)) end
+
+require 'bibtex'
+require 'nbib-html'
+
+bst = bibtex.style 'html'
+
+if table.getn(arg) ~= 1 then
+  eprintf('Usage: %s bibname', arg[0])
+  os.exit(1)
+end
+
+local bib = arg[1]
+
+local pre, cs = bibtex.all_entries(arg[1], bst.macros())
+bibtex.do_crossrefs(cs)
+bst.emit(io.stdout, pre, cs)
+
