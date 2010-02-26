@@ -2,8 +2,9 @@ nbibtex (0.9.18-9) unstable; urgency=low
 
   * minor latex documentation fixes (bad label; typo)
   * incorporate bib2html script
+  * rev deb std
 
- -- Barak A. Pearlmutter <bap@debian.org>  Fri, 04 Dec 2009 18:14:07 -0500
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 26 Feb 2010 10:17:10 +0000
 
 nbibtex (0.9.18-8) unstable; urgency=low
 
