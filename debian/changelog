@@ -3,8 +3,9 @@ nbibtex (0.9.18-9) unstable; urgency=low
   * minor latex documentation fixes (bad label; typo)
   * incorporate bib2html script
   * rev deb std
+  * Switch to dpkg-source 3.0 (git) format
 
- -- Barak A. Pearlmutter <bap@debian.org>  Fri, 26 Feb 2010 10:17:10 +0000
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 25 Mar 2010 18:56:39 +0000
 
 nbibtex (0.9.18-8) unstable; urgency=low
 
