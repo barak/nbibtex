@@ -1,8 +1,10 @@
 nbibtex (0.9.18-10) UNRELEASED; urgency=low
 
   * bump standards version (debian/control)
+  * dh --parallel (debian/rules)
+  * dh 8 (debian/compat, debian/control)
 
- -- Barak A. Pearlmutter <bap@debian.org>  Mon, 02 Aug 2010 14:34:58 +0200
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 01 Dec 2010 12:55:34 +0000
 
 nbibtex (0.9.18-9) unstable; urgency=low
 
