@@ -1,8 +1,4 @@
 #!/usr/bin/make -f
 
-dh_targets=binary binary-arch binary-indep build build-arch build-indep clean install
-
-$(dh_targets) %:
+%:
 	dh $@ --parallel
-
-.PHONY: $(dh_targets)
