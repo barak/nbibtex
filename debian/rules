@@ -2,3 +2,6 @@
 
 %:
 	dh $@ --parallel
+
+# Tell ./configure to ignore unknown options passed by dh_auto_configure.
+export ignore_unknown_options=true
