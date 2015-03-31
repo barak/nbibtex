@@ -3,6 +3,7 @@
 prefix=/usr/local
 mandir="\$(datarootdir)/man"
 plain_compatible=false
+if [ -z "${ignore_unknown_options}" ]; then ignore_unknown_options=false; fi
 
 while [ $# -gt 0 ]
 do
@@ -16,31 +17,21 @@ Options:
   --compat[ible] Bibliography style 'plainnat' identical to standard
   --prefix=/DIR  Set installation prefix [default $prefix]
   --mandir=/DIR  Man page installation prefix, [default $mandir]
-
-Options ignored in order to appease dh_auto_configure:
-  --build=x
-  --includedir=x
-  --infodir=x
-  --sysconfdir=x
-  --localstatedir=x
-  --libexecdir=x
-  --disable-maintainer-mode
-  --disable-dependency-tracking
+  --ignore-unknown-options (or set environment ignore_unknown_options=true)
 EOF
 	    exit 0
 	    ;;
 	--prefix=*) prefix="$(echo $1 | sed 's/.*=//')" ; shift ;;
 	--mandir=*) mandir="$(echo $1 | sed 's/.*=//')" ; shift ;;
 	--compat|--compatible) plain_compatible=true ; shift ;;
-	--build=*) shift ;;
-	--includedir=*) shift ;;
-	--infodir=*) shift ;;
-	--sysconfdir=*) shift ;;
-	--localstatedir=*) shift ;;
-	--libexecdir=*) shift ;;
-	--disable-maintainer-mode) shift ;;
-	--disable-dependency-tracking) shift ;;
-	*) echo "Usage: $0 --help"; exit 1 ;;
+	--ignore-unknown-options) ignore_unknown_options=true ; shift ;;
+	*) if ${ignore_unknown_options}; then
+	       echo "warning: Unknown option $1"
+	       shift
+	   else
+	       echo "error: Unknown option $1"
+	       echo "Usage: $0 --help"; exit 1
+	   fi ;;
     esac
 done
 
