@@ -3,8 +3,8 @@ Section: tex
 Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 9), autotools-dev, liblua5.1-0-dev, pkg-config, noweb, rubber, texlive-latex-extra, texlive-latex-recommended
-Standards-Version: 3.9.5
-Vcs-Git: git://git.debian.org/git/collab-maint/nbibtex.git
+Standards-Version: 3.9.6
+Vcs-Git: git://anonscm.debian.org/collab-maint/nbibtex.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/nbibtex.git
 Homepage: http://www.cs.tufts.edu/~nr/nbibtex/
 
