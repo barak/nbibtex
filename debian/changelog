@@ -1,3 +1,13 @@
+nbibtex (0.9.18-11) unstable; urgency=medium
+
+  * dh 8 (debian/compat, debian/control)
+  * module 'nbib-plain' seems okay (closes: #595069)
+  * engage mechanism to ignore unknown ./configure options to avoid playing
+    whack-a-mole with dh_auto_configure
+  * upstream fix to global 'os' nil value issue (closes: #539622)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 01 Apr 2015 20:13:34 +0100
+
 nbibtex (0.9.18-10) unstable; urgency=low
 
   * dh --parallel (debian/rules)
