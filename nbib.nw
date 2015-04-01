@@ -1240,7 +1240,7 @@ int main (int argc, char *argv[]) {
 
   #define OPEN(N) lua_pushcfunction(L, luaopen_ ## N); lua_call(L, 0, 0)
   OPEN(base); OPEN(io); OPEN(os); OPEN(package); OPEN(string); OPEN(table); 
-  OPEN(boyer_moore); OPEN(bibtex);
+  OPEN(bibtex); OPEN(boyer_moore); 
 
   for (i = 0; i < sizeof(files)/sizeof(files[0]); i++) {
     if (luaL_dofile(L, files[i])) {
