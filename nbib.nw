@@ -236,25 +236,25 @@ Success or failure is nonzero or zero but is represented using type [[bool]].
 <<function prototypes>>=
 typedef int bool;
 @
-Function [[getline]] refills the buffer with a new line (and updates
+Function [[get_line]] refills the buffer with a new line (and updates
 [[line_num]]), returning failure on end of file.
 <<function prototypes>>=
-static bool getline(Bibreader rdr);
+static bool get_line(Bibreader rdr);
 @ 
 Several scanning functions come in two flavors,
 which depend on what happends at the end of a line:
-the [[_getline]] flavor refills the buffer and keeps scanning;
+the [[_get_line]] flavor refills the buffer and keeps scanning;
 the normal flavor fails.
 Here are some functions that scan for combinations of particular
 characters, whitespace, and nonwhite characters.
 <<function prototypes>>=
 static bool upto1(Bibreader rdr, char c);
-static bool upto1_getline(Bibreader rdr, char c);
+static bool upto1_get_line(Bibreader rdr, char c);
 static void upto_white_or_1(Bibreader rdr, char c);
 static void upto_white_or_2(Bibreader rdr, char c1, char c2);
 static void upto_white_or_3(Bibreader rdr, char c1, char c2, char c3);
 static bool upto_nonwhite(Bibreader rdr);
-static bool upto_nonwhite_getline(Bibreader rdr);
+static bool upto_nonwhite_get_line(Bibreader rdr);
 @ Because there is always whitespace at the end of a line, the
 [[upto_white_*]] flavor cannot fail.
 @
@@ -365,7 +365,7 @@ If no entry remains, the function returns~0.
 <<function definitions>>=
 #undef ready_tok
 #define ready_tok(RDR) do { \
-  if (!upto_nonwhite_getline(RDR)) \
+  if (!upto_nonwhite_get_line(RDR)) \
     LERR("Unexpected end of file"); \
   } while(0)
 
@@ -403,7 +403,7 @@ static int get_bib_command_or_entry_and_process(Bibreader rdr) {
 }
 @ 
 <<scan [[rdr]] up to and past the next [[@]] sign and skip white space (or return 0)>>=
-if (!upto1_getline(rdr, '@'))
+if (!upto1_get_line(rdr, '@'))
   return 0;  /* no more entries; return nil */
 assert(*rdr->cur == '@');
 rdr->cur++;   /* skip the @ sign */
@@ -509,7 +509,7 @@ the error handling for [[ready_tok]] needs to be a bit different.
 <<Procedures and functions for input scanning>>=
 #undef ready_tok
 #define ready_tok(RDR) do { \
-  if (!upto_nonwhite_getline(RDR)) \
+  if (!upto_nonwhite_get_line(RDR)) \
     LERRB("Unexpected end of file"); \
   } while(0)
 @ 
@@ -697,9 +697,9 @@ static bool upto1(Bibreader rdr, char c) {
 Scan the reader up to the character requested or end of file;
 fails if not found.
 <<function definitions>>=
-static int upto1_getline(Bibreader rdr, char c) {
+static int upto1_get_line(Bibreader rdr, char c) {
   while (!upto1(rdr, c))
-    if (!getline(rdr))
+    if (!get_line(rdr))
       return 0;
   return 1;
 }
@@ -755,16 +755,16 @@ static bool upto_nonwhite(Bibreader rdr) {
 Scan past whitespace up to end of file if needed;
 returns true iff nonwhite character found.
 <<function definitions>>=
-static int upto_nonwhite_getline(Bibreader rdr) {
+static int upto_nonwhite_get_line(Bibreader rdr) {
   while (!upto_nonwhite(rdr))
-    if (!getline(rdr))
+    if (!get_line(rdr))
       return 0;
   return 1;
 }
 @ 
 \subsubsection{Actual input}
 <<function definitions>>=
-static bool getline(Bibreader rdr) {
+static bool get_line(Bibreader rdr) {
   char *result;
   unsigned char *buf = rdr->buf;
   int n;
@@ -1219,8 +1219,9 @@ listed in the [[nonids]] string.
 @ 
 \subsection{Main function for the nbib commands}
 
-This code will is the standalone main function for all the nbib commands.
-\nextchunklabel{c-main}
+\label{c-main}
+
+This code is the standalone main function for all the nbib commands.
 <<nbibtex.c>>=
 #include <stdlib.h>
 #include <stdio.h>
@@ -1238,8 +1239,8 @@ int main (int argc, char *argv[]) {
   static const char* files[] = { SHARE "/bibtex.lua",  SHARE "/natbib.nbs" };
 
   #define OPEN(N) lua_pushcfunction(L, luaopen_ ## N); lua_call(L, 0, 0)
-  OPEN(base); OPEN(table); OPEN(io); OPEN(package); OPEN(string); OPEN(bibtex);
-  OPEN(boyer_moore);
+  OPEN(base); OPEN(io); OPEN(os); OPEN(package); OPEN(string); OPEN(table); 
+  OPEN(bibtex); OPEN(boyer_moore); 
 
   for (i = 0; i < sizeof(files)/sizeof(files[0]); i++) {
     if (luaL_dofile(L, files[i])) {
@@ -1310,7 +1311,7 @@ How we get the C~code depends on how
 \begin{itemize}
 \item
 In the distribution, \texttt{bibtex.lua} is loaded by the C~code in
-chunk~\subpageref{c-main}, which defines the [[bibtex]] module.
+Section~\ref{c-main}, which defines the [[bibtex]] module.
 \item
 For standalone testing purposes, \texttt{bibtex.lua} can be loaded
 directly into an 
