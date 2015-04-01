@@ -1239,8 +1239,8 @@ int main (int argc, char *argv[]) {
   static const char* files[] = { SHARE "/bibtex.lua",  SHARE "/natbib.nbs" };
 
   #define OPEN(N) lua_pushcfunction(L, luaopen_ ## N); lua_call(L, 0, 0)
-  OPEN(base); OPEN(table); OPEN(io); OPEN(package); OPEN(string); OPEN(bibtex);
-  OPEN(boyer_moore);
+  OPEN(base); OPEN(io); OPEN(os); OPEN(package); OPEN(string); OPEN(table); 
+  OPEN(bibtex); OPEN(boyer_moore); 
 
   for (i = 0; i < sizeof(files)/sizeof(files[0]); i++) {
     if (luaL_dofile(L, files[i])) {
