@@ -1,3 +1,9 @@
+nbibtex (0.9.18-12) UNRELEASED; urgency=medium
+
+  * d/control: Set Vcs-* to salsa.debian.org
+
+ -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 10:10:01 +0200
+
 nbibtex (0.9.18-11) unstable; urgency=medium
 
   * dh 8 (debian/compat, debian/control)
