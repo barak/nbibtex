@@ -43,13 +43,13 @@ nbib.c nbibtex.c: nbib.nw
 nbib.tex: nbib.nw
 	noweave nbib.nw | tail -n +2 | sed 's/<VERSION>/$(VERSION)/' > $@
 
-## rubber f = fixedpoint latex f
+## latexmk f = fixedpoint latex f
 
 nbib.pdf: nbib.tex
-	rubber --warn=all --verbose --pdf $<
+	latexmk --pdf $<
 
 nbib.ps: nbib.tex
-	rubber --warn=all --verbose --ps $<
+	latexmk --ps $<
 
 ## NOTES
 
