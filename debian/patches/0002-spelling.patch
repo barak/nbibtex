@@ -1,0 +1,35 @@
+From: "Barak A. Pearlmutter" <barak+git@pearlmutter.net>
+Date: Thu, 18 Jul 2019 19:34:08 +0200
+Subject: spelling
+
+---
+ nbibfind.1   | 2 +-
+ nbibtex.1.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/nbibfind.1 b/nbibfind.1
+index c59276f..0d69e08 100644
+--- a/nbibfind.1
++++ b/nbibfind.1
+@@ -89,7 +89,7 @@ is found in the field named by
+ .I key
+ may also be
+ .BR "[type]" ,
+-which matches agains the type of the entry,
++which matches against the type of the entry,
+ or
+ .BR "*" ,
+ which looks for 
+diff --git a/nbibtex.1.in b/nbibtex.1.in
+index 3f50549..aaad299 100644
+--- a/nbibtex.1.in
++++ b/nbibtex.1.in
+@@ -207,7 +207,7 @@ is found in the field named by
+ .I key
+ may also be
+ .BR "[type]" ,
+-which matches agains the type of the entry,
++which matches against the type of the entry,
+ or
+ .BR "*" ,
+ which looks for 
