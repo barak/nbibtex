@@ -1,4 +1,3 @@
-/*-stamp
 *.o
 /*.aux
 /*.bbl
@@ -10,6 +9,9 @@
 /bibtex.lua
 /natbib.nbs
 /nbib.c
+/nbib.fdb_latexmk
+/nbib.fls
+/nbib.out
 /nbib.pdf
 /nbib.ps
 /nbib.tex
