@@ -2,7 +2,9 @@ Source: nbibtex
 Section: tex
 Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
-Build-Depends: debhelper-compat (= 12), autotools-dev, liblua5.1-0-dev, pkg-config, noweb, rubber, texlive-latex-extra, texlive-latex-recommended
+Build-Depends: debhelper-compat (= 12),
+	liblua5.1-0-dev, pkg-config, noweb,
+	latexmk, texlive-latex-extra, texlive-latex-recommended
 Standards-Version: 4.4.0
 Vcs-Git: https://salsa.debian.org/debian/nbibtex.git
 Vcs-Browser: https://salsa.debian.org/debian/nbibtex
