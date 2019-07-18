@@ -207,7 +207,7 @@ is found in the field named by
 .I key
 may also be
 .BR "[type]" ,
-which matches agains the type of the entry,
+which matches against the type of the entry,
 or
 .BR "*" ,
 which looks for 
