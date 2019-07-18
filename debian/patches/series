@@ -1,3 +1,4 @@
 0001-latexmk.patch
 0002-spelling.patch
 0003-no-hyperref-hypertex.patch
+0004-generate-PDF.patch

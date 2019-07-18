@@ -7,3 +7,6 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 # Tell ./configure to ignore unknown options passed by dh_auto_configure.
 export ignore_unknown_options=true
+
+override_dh_compress:
+	dh_compress --exclude=.pdf
