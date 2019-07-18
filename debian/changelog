@@ -1,8 +1,18 @@
-nbibtex (0.9.18-12) UNRELEASED; urgency=medium
+nbibtex (0.9.18-12) unstable; urgency=medium
 
+  [ Ondřej Nový ]
   * d/control: Set Vcs-* to salsa.debian.org
 
- -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 10:10:01 +0200
+  [ Barak A. Pearlmutter ]
+  * bump dh and policy versions
+  * patch: use latexmk instead of rubber
+  * harden executables
+  * patch: spelling error
+  * adjust to dh-churn-generated documentation location change
+  * patch: remove problematic hypertex option
+  * generate PDF documentation directly
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 18 Jul 2019 21:07:00 +0200
 
 nbibtex (0.9.18-11) unstable; urgency=medium
 
