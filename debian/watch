@@ -3,4 +3,4 @@
 
 version=3
 
-http://www.cs.tufts.edu/~nr/debian/ nbibtex_([\d\.]*)\.orig\.tar\.gz
+https://www.cs.tufts.edu/~nr/debian/ nbibtex_([\d\.]*)\.orig\.tar\.gz
