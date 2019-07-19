@@ -1,3 +1,10 @@
+nbibtex (0.9.18-13) unstable; urgency=medium
+
+  * secure upstream homepage and uscan URLs
+  * remove nonworking bib2html executable script (closes: #683663)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 19 Jul 2019 15:55:05 +0200
+
 nbibtex (0.9.18-12) unstable; urgency=medium
 
   [ Ondřej Nový ]
