@@ -5,7 +5,7 @@ nbibtex (0.9.18-12) unstable; urgency=medium
 
   [ Barak A. Pearlmutter ]
   * bump dh and policy versions
-  * patch: use latexmk instead of rubber
+  * patch: use latexmk instead of rubber (closes: #812704)
   * harden executables
   * patch: spelling error
   * adjust to dh-churn-generated documentation location change
