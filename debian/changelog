@@ -1,10 +1,3 @@
-nbibtex (0.9.18-13) UNRELEASED; urgency=medium
-
-  * dh --parallel now default, remove option
-  * suggest documentation package (closes: #849900)
-
- -- Barak A. Pearlmutter <bap@debian.org>  Fri, 19 Jul 2019 10:36:55 +0200
-
 nbibtex (0.9.18-12) unstable; urgency=medium
 
   [ Ondřej Nový ]
@@ -18,8 +11,11 @@ nbibtex (0.9.18-12) unstable; urgency=medium
   * adjust to dh-churn-generated documentation location change
   * patch: remove problematic hypertex option
   * generate PDF documentation directly
+  * dh --parallel now default, remove option
+  * suggest documentation package (closes: #849900)
+  * obey multiarch hinter
 
- -- Barak A. Pearlmutter <bap@debian.org>  Thu, 18 Jul 2019 21:07:00 +0200
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 19 Jul 2019 11:17:43 +0200
 
 nbibtex (0.9.18-11) unstable; urgency=medium
 
