@@ -1,3 +1,10 @@
+nbibtex (0.9.18-13) UNRELEASED; urgency=medium
+
+  * dh --parallel now default, remove option
+  * suggest documentation package (closes: #849900)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 19 Jul 2019 10:36:55 +0200
+
 nbibtex (0.9.18-12) unstable; urgency=medium
 
   [ Ondřej Nový ]
