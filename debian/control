@@ -24,6 +24,7 @@ Description: Powerful, flexible replacement for bibtex
 
 Package: nbibtex-doc
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends}
 Section: doc
 Description: Documentation of source code for nbibtex
