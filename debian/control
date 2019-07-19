@@ -12,7 +12,7 @@ Homepage: https://www.cs.tufts.edu/~nr/nbibtex/
 
 Package: nbibtex
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, lua5.1
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: nbibtex-doc
 Recommends: texlive-latex-base
 Description: Powerful, flexible replacement for bibtex
